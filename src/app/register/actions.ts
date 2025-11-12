@@ -10,7 +10,7 @@ export async function register(prevState: { message: string }, formData: FormDat
   const password = formData.get('password') as string;
 
   try {
-    const app = getFirebaseAdminApp();
+    const app = await getFirebaseAdminApp();
     const auth = getAuth(app);
     await auth.createUser({
       email,

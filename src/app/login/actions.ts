@@ -10,7 +10,7 @@ export async function login(prevState: { message: string }, formData: FormData) 
   const password = formData.get('password') as string;
 
   try {
-    const app = getFirebaseAdminApp();
+    const app = await getFirebaseAdminApp();
     const auth = getAuth(app);
     // This is a stand-in for a real sign-in mechanism
     // In a real app, you'd validate this against your user database

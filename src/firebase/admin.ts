@@ -1,15 +1,29 @@
-import { initializeApp, getApps, getApp, App } from 'firebase-admin/app';
+// src/firebase/admin.ts
+import { initializeApp, cert, getApps, getApp, App } from 'firebase-admin/app';
 
-const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
-  ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
-  : undefined;
+// Support either base64 or plain JSON env
+const serviceAccountEnv = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64 ?? process.env.FIREBASE_SERVICE_ACCOUNT;
 
-export function getFirebaseAdminApp(): App {
-  if (getApps().length) {
+let serviceAccount: any | undefined;
+
+if (serviceAccountEnv) {
+  try {
+    const raw = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64
+      ? Buffer.from(serviceAccountEnv, 'base64').toString('utf-8')
+      : serviceAccountEnv;
+    serviceAccount = JSON.parse(raw);
+  } catch (err) {
+    console.error('Failed to parse Firebase service account JSON', err);
+  }
+}
+
+// ✅ Must be async for Next.js server actions
+export async function getFirebaseAdminApp(): Promise<App> {
+  if (getApps().length > 0) {
     return getApp();
   }
 
   return initializeApp({
-    credential: serviceAccount ? require('firebase-admin/app').cert(serviceAccount) : undefined,
+    credential: serviceAccount ? cert(serviceAccount) : undefined,
   });
 }
