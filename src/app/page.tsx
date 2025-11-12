@@ -4,10 +4,9 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { services } from '@/app/data';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Brush, Sparkles, Users, BookOpen } from 'lucide-react';
+import { ArrowRight, Brush, Sparkles, Users, BookOpen, Star } from 'lucide-react';
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-background');
   const serviceIcons: { [key: string]: React.ElementType } = {
     'bridal-makeup': Sparkles,
     'semi-bridal-makeup': Brush,
@@ -18,23 +17,12 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative h-[60vh] min-h-[400px] w-full">
-        {heroImage && (
-          <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
-            data-ai-hint={heroImage.imageHint}
-            fill
-            className="object-cover"
-            priority
-          />
-        )}
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
-          <h1 className="font-headline text-5xl font-bold md:text-7xl">
+      <section className="relative w-full bg-gradient-to-br from-primary/10 via-background to-background py-20 md:py-32">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="font-headline text-5xl font-bold text-primary md:text-7xl">
             Elegance & Artistry, Redefined.
           </h1>
-          <p className="mt-4 max-w-2xl font-body text-lg md:text-xl">
+          <p className="mt-4 max-w-2xl mx-auto font-body text-lg text-muted-foreground md:text-xl">
             Discover a world of beauty with FaniaBook. We offer bespoke makeup services to make your special moments unforgettable.
           </p>
           <Button asChild className="mt-8 bg-accent text-accent-foreground hover:bg-accent/90" size="lg">
@@ -54,45 +42,90 @@ export default function Home() {
               From bridal glamour to professional classes, we cater to all your beauty needs with passion and precision.
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2">
             {services.map((service) => {
               const serviceImage = PlaceHolderImages.find((img) => img.id === service.imageId);
               const Icon = serviceIcons[service.id] || Brush;
               return (
-                <Card key={service.id} className="overflow-hidden shadow-lg transition-transform hover:scale-105 hover:shadow-xl">
-                  <CardHeader>
-                    {serviceImage && (
-                      <div className="relative h-48 w-full">
-                        <Image
-                          src={serviceImage.imageUrl}
-                          alt={serviceImage.description}
-                          data-ai-hint={serviceImage.imageHint}
-                          fill
-                          className="object-cover rounded-t-lg"
-                        />
+                <Card key={service.id} className="overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col md:flex-row items-center">
+                  {serviceImage && (
+                    <div className="relative h-48 w-full md:w-1/3 flex-shrink-0">
+                      <Image
+                        src={serviceImage.imageUrl}
+                        alt={serviceImage.description}
+                        data-ai-hint={serviceImage.imageHint}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-col justify-between p-6 w-full">
+                    <div>
+                      <div className="flex items-center mb-2">
+                        <Icon className="h-8 w-8 text-accent mr-3" />
+                        <CardTitle className="font-headline text-2xl">{service.name}</CardTitle>
                       </div>
-                    )}
-                    <div className="flex items-center pt-4">
-                      <Icon className="h-8 w-8 text-accent mr-3" />
-                      <CardTitle className="font-headline text-2xl">{service.name}</CardTitle>
+                      <CardDescription>{service.description}</CardDescription>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>{service.description}</CardDescription>
                     <div className="mt-4 text-right">
-                      <p className="font-bold text-lg text-primary">From ${service.price}</p>
+                       <Button asChild variant="link" className="text-accent">
+                          <Link href="/booking">
+                           Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                          </Link>
+                       </Button>
                     </div>
-                  </CardContent>
+                  </div>
                 </Card>
               );
             })}
           </div>
            <div className="text-center mt-12">
-            <Button asChild variant="link" className="text-accent text-lg">
+            <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90" size="lg">
                 <Link href="/booking">
-                See all options and book now <ArrowRight className="ml-2 h-5 w-5" />
+                See All Options & Book Now <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="w-full bg-primary/5 py-16 md:py-24">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+              <h2 className="font-headline text-4xl font-bold text-primary">What Our Clients Say</h2>
+              <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
+                We are proud to have delighted our clients. Here's what they think about our service.
+              </p>
+          </div>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+              <Card>
+                  <CardContent className="p-6">
+                      <div className="flex items-center mb-4">
+                          {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />)}
+                      </div>
+                      <p className="text-muted-foreground mb-4">"The bridal makeup was absolutely perfect! It lasted all day and I felt like a princess. Highly recommended!"</p>
+                      <p className="font-bold text-right">- Sarah L.</p>
+                  </CardContent>
+              </Card>
+              <Card>
+                  <CardContent className="p-6">
+                      <div className="flex items-center mb-4">
+                          {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />)}
+                      </div>
+                      <p className="text-muted-foreground mb-4">"I took a makeup class and it was fantastic. I learned so many professional tips and tricks. The instructor was so patient."</p>
+                      <p className="font-bold text-right">- Jessica M.</p>
+                  </CardContent>
+              </Card>
+              <Card>
+                  <CardContent className="p-6">
+                      <div className="flex items-center mb-4">
+                           {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />)}
+                      </div>
+                      <p className="text-muted-foreground mb-4">"Absolutely stunning party makeup. I received so many compliments and felt incredibly glamorous. Will definitely book again!"</p>
+                      <p className="font-bold text-right">- Emily R.</p>
+                  </CardContent>
+              </Card>
           </div>
         </div>
       </section>
