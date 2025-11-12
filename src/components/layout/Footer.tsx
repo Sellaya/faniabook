@@ -50,6 +50,17 @@ export default function Footer() {
         </div>
         <div className="mt-8 border-t pt-4 text-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} FaniaBook. All Rights Reserved.</p>
+          <p className="mt-2">
+            Product By{' '}
+            <a
+              href="https://www.instagram.com/sellayadigital"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-primary hover:underline"
+            >
+              Sellaya
+            </a>
+          </p>
         </div>
       </div>
     </footer>
