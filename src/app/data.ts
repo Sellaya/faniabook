@@ -1,4 +1,4 @@
-import type { Service } from '@/lib/types';
+import type { Service, MockBooking } from '@/lib/types';
 
 export const services: Service[] = [
   {
@@ -29,4 +29,9 @@ export const services: Service[] = [
     price: 100,
     imageId: 'makeup-classes',
   },
+];
+
+export const mockBookings: MockBooking[] = [
+  { date: '2024-09-10T04:00:00.000Z', time: '09:00 AM' },
+  { date: '2024-09-12T04:00:00.000Z', time: '02:00 PM' },
 ];

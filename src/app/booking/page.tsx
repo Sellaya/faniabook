@@ -1,18 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import * as z from 'zod';
-import { services } from '@/app/data';
-import type { Service, ServiceType } from '@/lib/types';
+import { services, mockBookings } from '@/app/data';
+import type { Service } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -31,8 +29,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { Building, MapPin } from 'lucide-react';
+import { Building, MapPin, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
 
 const bookingSchema = z.object({
   serviceId: z.string().min(1, 'Please select a service.'),
@@ -74,15 +74,40 @@ const availableTimes = [
 export default function BookingPage() {
   const router = useRouter();
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [isDatePickerOpen, setDatePickerOpen] = useState(false);
+  const [isSlotBooked, setIsSlotBooked] = useState(false);
 
   const form = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
   });
 
-  const { watch, control, formState: { errors } } = form;
+  const { watch, control, formState: { errors }, getValues } = form;
 
   const watchedServiceType = watch('serviceType');
-  
+  const watchedDate = watch('date');
+  const watchedTime = watch('time');
+
+  useEffect(() => {
+    const checkBookingConflict = () => {
+      const selectedDate = getValues('date');
+      const selectedTime = getValues('time');
+
+      if (!selectedDate || !selectedTime) {
+        setIsSlotBooked(false);
+        return;
+      }
+      
+      const isBooked = mockBookings.some(booking => 
+        new Date(booking.date).toDateString() === selectedDate.toDateString() && booking.time === selectedTime
+      );
+
+      setIsSlotBooked(isBooked);
+    };
+
+    checkBookingConflict();
+  }, [watchedDate, watchedTime, getValues]);
+
+
   const calculateQuote = () => {
     if (!selectedService) return 0;
     let total = selectedService.price;
@@ -93,6 +118,8 @@ export default function BookingPage() {
   };
 
   const onSubmit = (data: BookingFormData) => {
+    if (isSlotBooked) return;
+
     let location;
     if (data.serviceType === 'mobile' && data.streetAddress && data.postalCode) {
         location = `${data.streetAddress}, Ontario, ${data.postalCode}`;
@@ -113,7 +140,7 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-2xl py-8 px-4">
+    <div className="container mx-auto max-w-lg py-8 px-4">
       <header className="text-center mb-8">
         <h1 className="font-headline text-4xl font-bold text-primary">Create Your Booking</h1>
         <p className="mt-2 text-md text-muted-foreground">Follow the steps to schedule your appointment.</p>
@@ -129,27 +156,20 @@ export default function BookingPage() {
               name="serviceId"
               control={control}
               render={({ field }) => (
-                <div className="grid grid-cols-2 gap-3">
-                  {services.map((service) => {
-                    const isSelected = field.value === service.id;
-                    return (
-                      <div
-                        key={service.id}
-                        onClick={() => {
-                          field.onChange(service.id);
-                          const currentService = services.find(s => s.id === service.id) || null;
-                          setSelectedService(currentService);
-                        }}
-                        className={cn(
-                          "rounded-md border p-3 cursor-pointer transition-all text-center",
-                          isSelected ? "border-primary ring-2 ring-primary bg-primary/5" : "border-border hover:border-primary/50"
-                        )}
-                      >
-                        <h3 className="font-semibold text-sm">{service.name}</h3>
-                      </div>
-                    );
-                  })}
-                </div>
+                 <Select onValueChange={(value) => {
+                    field.onChange(value);
+                    const currentService = services.find(s => s.id === value) || null;
+                    setSelectedService(currentService);
+                 }} defaultValue={field.value}>
+                   <SelectTrigger>
+                     <SelectValue placeholder="Select a service" />
+                   </SelectTrigger>
+                   <SelectContent>
+                     {services.map((service) => (
+                       <SelectItem key={service.id} value={service.id}>{service.name}</SelectItem>
+                     ))}
+                   </SelectContent>
+                 </Select>
               )}
             />
             {errors.serviceId && <p className="text-destructive mt-2 text-sm">{errors.serviceId.message}</p>}
@@ -240,16 +260,34 @@ export default function BookingPage() {
                 name="date"
                 control={control}
                 render={({ field }) => (
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) => date < new Date() || date < new Date("1900-01-01")}
-                    className="rounded-md border p-0"
-                  />
+                  <Popover open={isDatePickerOpen} onOpenChange={setDatePickerOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          setDatePickerOpen(false);
+                        }}
+                        disabled={(date) => date < new Date() || date < new Date("1900-01-01")}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 )}
               />
-               {errors.date && <p className="text-destructive -mt-2 px-3 pb-3 text-sm">{errors.date.message}</p>}
+               {errors.date && <p className="text-destructive mt-1 text-sm">{errors.date.message}</p>}
 
             <div>
                <Label className="text-base font-medium">Available Time Slots</Label>
@@ -271,6 +309,17 @@ export default function BookingPage() {
               />
                {errors.time && <p className="text-destructive mt-2 text-sm">{errors.time.message}</p>}
             </div>
+
+            {isSlotBooked && (
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Slot Unavailable</AlertTitle>
+                    <AlertDescription>
+                        This time slot is already booked. Please select a different time or contact Fania directly to inquire about this date.
+                    </AlertDescription>
+                </Alert>
+            )}
+
           </CardContent>
         </Card>
 
@@ -295,12 +344,11 @@ export default function BookingPage() {
                 {errors.phone && <p className="text-destructive text-sm">{errors.phone.message}</p>}
             </div>
           </CardContent>
-          <CardFooter>
-            <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={!selectedService}>
-              Generate Quote & Proceed
-            </Button>
-          </CardFooter>
         </Card>
+
+        <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={!selectedService || isSlotBooked}>
+            Generate Quote & Proceed
+        </Button>
       </form>
     </div>
   );

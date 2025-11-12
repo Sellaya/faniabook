@@ -16,3 +16,8 @@ export type Booking = {
   location?: string;
   price: number;
 };
+
+export type MockBooking = {
+  date: string;
+  time: string;
+};
