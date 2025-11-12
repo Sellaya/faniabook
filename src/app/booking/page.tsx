@@ -32,9 +32,7 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { DollarSign, MapPin, Building, Calendar as CalendarIcon, Clock, User, Mail, Phone } from 'lucide-react';
-import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { DollarSign, MapPin, Building, Calendar as CalendarIcon, Clock } from 'lucide-react';
 
 const bookingSchema = z.object({
   serviceId: z.string().min(1, 'Please select a service.'),
@@ -100,239 +98,216 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-6xl py-12 px-4">
-      <header className="text-center mb-12">
-        <h1 className="font-headline text-5xl font-bold text-primary">Create Your Booking</h1>
-        <p className="mt-2 text-lg text-muted-foreground">Follow the steps below to schedule your appointment.</p>
+    <div className="container mx-auto max-w-2xl py-8 px-4">
+      <header className="text-center mb-8">
+        <h1 className="font-headline text-4xl font-bold text-primary">Create Your Booking</h1>
+        <p className="mt-2 text-md text-muted-foreground">Follow the steps to schedule your appointment.</p>
       </header>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
-          {/* Service Selection */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline text-2xl">1. Select a Service</CardTitle>
-            </CardHeader>
-            <CardContent>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Service Selection */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-headline text-xl">1. Select a Service</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Controller
+              name="serviceId"
+              control={control}
+              render={({ field }) => (
+                <div className="grid grid-cols-2 gap-3">
+                  {services.map((service) => {
+                    const isSelected = field.value === service.id;
+                    return (
+                      <div
+                        key={service.id}
+                        onClick={() => {
+                          field.onChange(service.id);
+                          setSelectedService(service);
+                        }}
+                        className={cn(
+                          "rounded-md border p-3 cursor-pointer transition-all text-center",
+                          isSelected ? "border-primary ring-2 ring-primary bg-primary/5" : "border-border hover:border-primary/50"
+                        )}
+                      >
+                        <h3 className="font-semibold text-sm">{service.name}</h3>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            />
+            {errors.serviceId && <p className="text-destructive mt-2 text-sm">{errors.serviceId.message}</p>}
+          </CardContent>
+        </Card>
+
+        {/* Service Options */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-headline text-xl">2. Choose Your Options</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="text-base font-medium">Service Type</Label>
               <Controller
-                name="serviceId"
+                name="serviceType"
                 control={control}
                 render={({ field }) => (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {services.map((service) => {
-                      const serviceImage = PlaceHolderImages.find(img => img.id === service.imageId);
-                      const isSelected = field.value === service.id;
-                      return (
-                        <div
-                          key={service.id}
-                          onClick={() => {
-                            field.onChange(service.id);
-                            setSelectedService(service);
-                          }}
-                          className={cn(
-                            "rounded-lg border-2 p-4 cursor-pointer transition-all",
-                            isSelected ? "border-primary ring-2 ring-primary" : "border-border hover:border-primary/50"
-                          )}
-                        >
-                          {serviceImage && (
-                            <Image src={serviceImage.imageUrl} alt={serviceImage.description} width={400} height={300} className="rounded-md object-cover w-full h-32 mb-4" />
-                          )}
-                          <h3 className="font-bold text-lg">{service.name}</h3>
-                          <p className="text-sm text-muted-foreground">{service.description}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="mt-2 grid grid-cols-2 gap-3"
+                  >
+                    <Label className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-3 text-sm hover:bg-accent/50 [&:has([data-state=checked])]:border-primary">
+                      <RadioGroupItem value="in-studio" className="sr-only" />
+                      <Building className="mb-2 h-5 w-5" />
+                      In-Studio
+                    </Label>
+                    <Label className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-3 text-sm hover:bg-accent/50 [&:has([data-state=checked])]:border-primary">
+                      <RadioGroupItem value="mobile" className="sr-only" />
+                      <MapPin className="mb-2 h-5 w-5" />
+                      Mobile Service
+                    </Label>
+                  </RadioGroup>
                 )}
               />
-              {errors.serviceId && <p className="text-destructive mt-2 text-sm">{errors.serviceId.message}</p>}
-            </CardContent>
-          </Card>
-
-          {/* Service Options */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline text-2xl">2. Choose Your Options</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
+               {errors.serviceType && <p className="text-destructive mt-2 text-sm">{errors.serviceType.message}</p>}
+            </div>
+            {watchedServiceType === 'mobile' && (
               <div>
-                <Label className="text-base font-medium">Service Type</Label>
-                <Controller
-                  name="serviceType"
-                  control={control}
-                  render={({ field }) => (
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4"
-                    >
-                      <Label className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent/50 [&:has([data-state=checked])]:border-primary">
-                        <RadioGroupItem value="in-studio" className="sr-only" />
-                        <Building className="mb-3 h-6 w-6" />
-                        In-Studio
-                      </Label>
-                      <Label className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent/50 [&:has([data-state=checked])]:border-primary">
-                        <RadioGroupItem value="mobile" className="sr-only" />
-                        <MapPin className="mb-3 h-6 w-6" />
-                        Mobile Service
-                      </Label>
-                    </RadioGroup>
-                  )}
+                <Label htmlFor="location" className="text-base font-medium">Location</Label>
+                <Input
+                  id="location"
+                  placeholder="Enter your address"
+                  className="mt-2"
+                  {...form.register('location')}
                 />
-                 {errors.serviceType && <p className="text-destructive mt-2 text-sm">{errors.serviceType.message}</p>}
+                 {errors.location && <p className="text-destructive mt-2 text-sm">{errors.location.message}</p>}
               </div>
-              {watchedServiceType === 'mobile' && (
-                <div>
-                  <Label htmlFor="location" className="text-base font-medium">Location</Label>
-                  <Input
-                    id="location"
-                    placeholder="Enter your address for mobile service"
-                    className="mt-2"
-                    {...form.register('location')}
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Date & Time */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-headline text-xl">3. Select Date & Time</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Controller
+                name="date"
+                control={control}
+                render={({ field }) => (
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) => date < new Date() || date < new Date("1900-01-01")}
+                    className="rounded-md border p-0"
                   />
-                   {errors.location && <p className="text-destructive mt-2 text-sm">{errors.location.message}</p>}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                )}
+              />
+               {errors.date && <p className="text-destructive -mt-2 px-3 pb-3 text-sm">{errors.date.message}</p>}
 
-          {/* Date & Time */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline text-2xl">3. Select Date & Time</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col items-center">
-                <Controller
-                  name="date"
-                  control={control}
-                  render={({ field }) => (
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) => date < new Date() || date < new Date("1900-01-01")}
-                      initialFocus
-                    />
-                  )}
-                />
-                 {errors.date && <p className="text-destructive mt-2 text-sm">{errors.date.message}</p>}
-              </div>
-              <div className="space-y-4">
-                 <Label className="text-base font-medium">Available Time Slots</Label>
-                <Controller
-                  name="time"
-                  control={control}
-                  render={({ field }) => (
-                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                       <SelectTrigger>
-                         <SelectValue placeholder="Select a time" />
-                       </SelectTrigger>
-                       <SelectContent>
-                         {availableTimes.map(time => (
-                           <SelectItem key={time} value={time}>{time}</SelectItem>
-                         ))}
-                       </SelectContent>
-                     </Select>
-                  )}
-                />
-                 {errors.time && <p className="text-destructive mt-2 text-sm">{errors.time.message}</p>}
-              </div>
-            </CardContent>
-          </Card>
+            <div>
+               <Label className="text-base font-medium">Available Time Slots</Label>
+              <Controller
+                name="time"
+                control={control}
+                render={({ field }) => (
+                   <Select onValueChange={field.onChange} defaultValue={field.value}>
+                     <SelectTrigger className="mt-2">
+                       <SelectValue placeholder="Select a time" />
+                     </SelectTrigger>
+                     <SelectContent>
+                       {availableTimes.map(time => (
+                         <SelectItem key={time} value={time}>{time}</SelectItem>
+                       ))}
+                     </SelectContent>
+                   </Select>
+                )}
+              />
+               {errors.time && <p className="text-destructive mt-2 text-sm">{errors.time.message}</p>}
+            </div>
+          </CardContent>
+        </Card>
 
-          {/* Contact Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline text-2xl">4. Your Contact Information</CardTitle>
-              <CardDescription>We need your details to finalize the booking.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" placeholder="Jane Doe" {...form.register('name')} />
-                    {errors.name && <p className="text-destructive text-sm">{errors.name.message}</p>}
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="jane@example.com" {...form.register('email')} />
-                    {errors.email && <p className="text-destructive text-sm">{errors.email.message}</p>}
-                </div>
+        {/* Contact Info */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-headline text-xl">4. Your Contact Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+              <div className="space-y-2">
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input id="name" placeholder="Jane Doe" {...form.register('name')} />
+                  {errors.name && <p className="text-destructive text-sm">{errors.name.message}</p>}
               </div>
               <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" type="tel" placeholder="(123) 456-7890" {...form.register('phone')} />
-                  {errors.phone && <p className="text-destructive text-sm">{errors.phone.message}</p>}
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input id="email" type="email" placeholder="jane@example.com" {...form.register('email')} />
+                  {errors.email && <p className="text-destructive text-sm">{errors.email.message}</p>}
               </div>
-            </CardContent>
-          </Card>
+            <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input id="phone" type="tel" placeholder="(123) 456-7890" {...form.register('phone')} />
+                {errors.phone && <p className="text-destructive text-sm">{errors.phone.message}</p>}
+            </div>
+          </CardContent>
+        </Card>
 
-        </div>
-
-        {/* Quote Summary */}
-        <div className="lg:col-span-1">
-          <Card className="sticky top-24 shadow-lg">
-            <CardHeader>
-              <CardTitle className="font-headline text-2xl flex items-center gap-2"><DollarSign/> Quote Summary</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {!selectedService ? (
-                <p className="text-muted-foreground">Select a service to see the quote.</p>
-              ) : (
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>{selectedService.name}</span>
-                    <span>${selectedService.price.toFixed(2)}</span>
+        {/* Quote Summary & Action */}
+        <Card className="shadow-md">
+          <CardHeader>
+            <CardTitle className="font-headline text-xl flex items-center gap-2"><DollarSign/> Quote Summary</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {!selectedService ? (
+              <p className="text-muted-foreground text-sm">Select a service to see your quote.</p>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>{selectedService.name}</span>
+                </div>
+                {watchedServiceType === 'mobile' && (
+                  <div className="flex justify-between text-sm">
+                    <span>Mobile Service Fee</span>
                   </div>
-                  {watchedServiceType === 'mobile' && (
-                    <div className="flex justify-between">
-                      <span>Mobile Service Fee</span>
-                      <span>$50.00</span>
+                )}
+                <div className="border-t pt-2 mt-2 font-bold text-lg flex justify-between">
+                  <span>Total</span>
+                  <span>${calculateQuote().toFixed(2)}</span>
+                </div>
+
+                <div className="text-xs text-muted-foreground pt-2 space-y-1">
+                  {watchedDate && (
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon className="h-3 w-3" />
+                      <span>{format(watchedDate, 'PPP')}</span>
                     </div>
                   )}
-                  <div className="border-t pt-2 mt-2 font-bold text-lg flex justify-between">
-                    <span>Total</span>
-                    <span>${calculateQuote().toFixed(2)}</span>
-                  </div>
-
-                  <div className="text-sm text-muted-foreground pt-4 space-y-2">
-                    {watchedDate && (
-                      <div className="flex items-center gap-2">
-                        <CalendarIcon className="h-4 w-4" />
-                        <span>{format(watchedDate, 'PPP')}</span>
-                      </div>
-                    )}
-                    {watchedTime && (
-                       <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        <span>{watchedTime}</span>
-                      </div>
-                    )}
-                    {watchedServiceType === 'in-studio' && (
-                       <div className="flex items-center gap-2">
-                        <Building className="h-4 w-4" />
-                        <span>In-Studio</span>
-                      </div>
-                    )}
-                     {watchedServiceType === 'mobile' && watchedLocation && (
-                       <div className="flex items-start gap-2">
-                        <MapPin className="h-4 w-4 mt-1 flex-shrink-0" />
-                        <span>{watchedLocation}</span>
-                      </div>
-                    )}
-                  </div>
-
+                  {watchedTime && (
+                     <div className="flex items-center gap-2">
+                      <Clock className="h-3 w-3" />
+                      <span>{watchedTime}</span>
+                    </div>
+                  )}
+                   {watchedServiceType === 'mobile' && watchedLocation && (
+                     <div className="flex items-start gap-2">
+                      <MapPin className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                      <span>{watchedLocation}</span>
+                    </div>
+                  )}
                 </div>
-              )}
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={!selectedService}>
-                Generate Quote & Proceed
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
+              </div>
+            )}
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={!selectedService}>
+              Generate Quote & Proceed
+            </Button>
+          </CardFooter>
+        </Card>
       </form>
     </div>
   );
