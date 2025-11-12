@@ -1,8 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { services } from '@/app/data';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Brush, Sparkles, Users, BookOpen, Star } from 'lucide-react';
 
@@ -44,21 +42,9 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {services.map((service) => {
-              const serviceImage = PlaceHolderImages.find((img) => img.id === service.imageId);
               const Icon = serviceIcons[service.id] || Brush;
               return (
-                <Card key={service.id} className="overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col md:flex-row items-center">
-                  {serviceImage && (
-                    <div className="relative h-48 w-full md:w-1/3 flex-shrink-0">
-                      <Image
-                        src={serviceImage.imageUrl}
-                        alt={serviceImage.description}
-                        data-ai-hint={serviceImage.imageHint}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
+                <Card key={service.id} className="overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col">
                   <div className="flex flex-col justify-between p-6 w-full">
                     <div>
                       <div className="flex items-center mb-2">
