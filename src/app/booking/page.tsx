@@ -31,8 +31,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import { DollarSign, MapPin, Building, Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { Building, MapPin } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const bookingSchema = z.object({
   serviceId: z.string().min(1, 'Please select a service.'),
@@ -45,9 +45,22 @@ const bookingSchema = z.object({
   name: z.string().min(1, 'Please enter your name.'),
   email: z.string().email('Please enter a valid email address.'),
   phone: z.string().min(10, 'Please enter a valid phone number.'),
-}).refine(data => data.serviceType !== 'mobile' || (data.location && data.location.trim() !== ''), {
+}).refine(data => {
+  if (data.serviceType === 'mobile') {
+    return data.location && data.location.trim() !== '';
+  }
+  return true;
+}, {
   message: 'Location is required for mobile services.',
   path: ['location'],
+}).refine(data => {
+    if (data.serviceType === 'mobile' && data.location) {
+        return data.location.toLowerCase().includes('ontario');
+    }
+    return true;
+}, {
+    message: 'Service is only available in Ontario.',
+    path: ['location'],
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
@@ -168,12 +181,23 @@ export default function BookingPage() {
               />
                {errors.serviceType && <p className="text-destructive mt-2 text-sm">{errors.serviceType.message}</p>}
             </div>
+
+            {watchedServiceType === 'in-studio' && (
+              <Alert>
+                <Building className="h-4 w-4" />
+                <AlertTitle>Our Studio Address</AlertTitle>
+                <AlertDescription>
+                  123 Beauty Lane, Toronto, Ontario, M5B 2H1
+                </AlertDescription>
+              </Alert>
+            )}
+            
             {watchedServiceType === 'mobile' && (
               <div>
-                <Label htmlFor="location" className="text-base font-medium">Location</Label>
+                <Label htmlFor="location" className="text-base font-medium">Your Address</Label>
                 <Input
                   id="location"
-                  placeholder="Enter your address"
+                  placeholder="Enter your address in Ontario"
                   className="mt-2"
                   {...form.register('location')}
                 />
