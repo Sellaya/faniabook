@@ -9,6 +9,7 @@ import {
   Home,
   CalendarDays,
   PenSquare,
+  Search,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -16,6 +17,7 @@ import { cn } from '@/lib/utils';
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/booking', label: 'Booking', icon: CalendarDays },
+  { href: '/booking/status', label: 'Check Booking', icon: Search },
   { href: '/admin/review-summary', label: 'Review Tool', icon: PenSquare },
 ];
 

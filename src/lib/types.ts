@@ -21,3 +21,12 @@ export type MockBooking = {
   date: string;
   time: string;
 };
+
+export type DetailedMockBooking = {
+  id: string;
+  serviceName: string;
+  date: string;
+  time: string;
+  status: string;
+  clientName: string;
+};

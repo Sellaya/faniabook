@@ -9,8 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
-import { CheckCircle, Home, User } from 'lucide-react';
+import { CheckCircle, Home, User, Copy } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
 
 function SuccessContent() {
   const searchParams = useSearchParams();
@@ -21,12 +22,17 @@ function SuccessContent() {
     time: string;
     price: number;
     location?: string;
+    bookingId: string;
   } | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const serviceId = searchParams.get('serviceId');
     const service = services.find(s => s.id === serviceId) || null;
     
+    // Generate a mock 4-digit booking ID
+    const mockBookingId = Math.floor(1000 + Math.random() * 9000).toString();
+
     setBookingDetails({
       service,
       serviceType: searchParams.get('serviceType') || '',
@@ -34,8 +40,19 @@ function SuccessContent() {
       time: searchParams.get('time') || '',
       price: Number(searchParams.get('price')) || 0,
       location: searchParams.get('location') || undefined,
+      bookingId: mockBookingId,
     });
   }, [searchParams]);
+
+  const handleCopyToClipboard = () => {
+    if (bookingDetails?.bookingId) {
+      navigator.clipboard.writeText(bookingDetails.bookingId);
+      toast({
+        title: "Booking ID Copied!",
+        description: "You can use this ID to check your booking status later.",
+      });
+    }
+  };
 
   if (!bookingDetails || !bookingDetails.service || !bookingDetails.date) {
     return (
@@ -54,7 +71,7 @@ function SuccessContent() {
     );
   }
 
-  const { service, serviceType, date, time, price, location } = bookingDetails;
+  const { service, serviceType, date, time, price, location, bookingId } = bookingDetails;
   
   return (
     <div className="container mx-auto max-w-2xl py-12 px-4">
@@ -70,6 +87,13 @@ function SuccessContent() {
               <CardTitle className="font-headline text-xl">Booking Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
+              <div className="flex items-center justify-between">
+                <p><strong>Your Booking ID:</strong> <span className="font-mono text-primary">{bookingId}</span></p>
+                <Button variant="ghost" size="icon" onClick={handleCopyToClipboard}>
+                    <Copy className="h-4 w-4" />
+                    <span className="sr-only">Copy Booking ID</span>
+                </Button>
+              </div>
               <p><strong>Service:</strong> {service.name}</p>
               <p><strong>Date:</strong> {format(date, 'MMMM dd, yyyy')}</p>
               <p><strong>Time:</strong> {time}</p>
