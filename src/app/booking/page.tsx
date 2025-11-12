@@ -133,7 +133,6 @@ export default function BookingPage() {
                           )}
                           <h3 className="font-bold text-lg">{service.name}</h3>
                           <p className="text-sm text-muted-foreground">{service.description}</p>
-                          <p className="font-bold mt-2 text-primary">${service.price}</p>
                         </div>
                       );
                     })}
