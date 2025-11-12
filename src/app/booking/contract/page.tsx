@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
+import { Mail, Phone, User } from 'lucide-react';
 
 function ContractContent() {
   const searchParams = useSearchParams();
@@ -25,6 +26,9 @@ function ContractContent() {
     time: string;
     price: number;
     location?: string;
+    name: string;
+    email: string;
+    phone: string;
   } | null>(null);
 
   useEffect(() => {
@@ -38,6 +42,9 @@ function ContractContent() {
       time: searchParams.get('time') || '',
       price: Number(searchParams.get('price')) || 0,
       location: searchParams.get('location') || undefined,
+      name: searchParams.get('name') || '',
+      email: searchParams.get('email') || '',
+      phone: searchParams.get('phone') || '',
     });
   }, [searchParams]);
 
@@ -64,7 +71,7 @@ function ContractContent() {
     );
   }
 
-  const { service, serviceType, date, time, price, location } = bookingDetails;
+  const { service, serviceType, date, time, price, location, name, email, phone } = bookingDetails;
   
   return (
     <div className="container mx-auto max-w-3xl py-12 px-4">
@@ -79,12 +86,32 @@ function ContractContent() {
               <CardTitle className="font-headline text-xl">Your Booking Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
-              <p><strong>Service:</strong> {service.name}</p>
-              <p><strong>Date:</strong> {format(date, 'MMMM dd, yyyy')}</p>
-              <p><strong>Time:</strong> {time}</p>
-              <p><strong>Type:</strong> {serviceType === 'mobile' ? 'Mobile Service' : 'In-Studio'}</p>
-              {serviceType === 'mobile' && location && <p><strong>Location:</strong> {location}</p>}
-              <p className="text-lg font-bold pt-2"><strong>Total:</strong> ${price.toFixed(2)}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div>
+                        <h4 className="font-semibold mb-2">Client Details</h4>
+                        <div className="flex items-center gap-2">
+                            <User className="h-4 w-4 text-muted-foreground" />
+                            <span>{name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Mail className="h-4 w-4 text-muted-foreground" />
+                            <span>{email}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Phone className="h-4 w-4 text-muted-foreground" />
+                            <span>{phone}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold mb-2">Appointment Details</h4>
+                        <p><strong>Service:</strong> {service.name}</p>
+                        <p><strong>Date:</strong> {format(date, 'MMMM dd, yyyy')}</p>
+                        <p><strong>Time:</strong> {time}</p>
+                        <p><strong>Type:</strong> {serviceType === 'mobile' ? 'Mobile Service' : 'In-Studio'}</p>
+                        {serviceType === 'mobile' && location && <p><strong>Location:</strong> {location}</p>}
+                    </div>
+                </div>
+                 <p className="text-lg font-bold pt-4 text-right"><strong>Total:</strong> ${price.toFixed(2)}</p>
             </CardContent>
           </Card>
 

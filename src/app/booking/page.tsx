@@ -31,8 +31,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { addDays, format } from 'date-fns';
-import { DollarSign, MapPin, Building, Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { format } from 'date-fns';
+import { DollarSign, MapPin, Building, Calendar as CalendarIcon, Clock, User, Mail, Phone } from 'lucide-react';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
@@ -44,6 +44,9 @@ const bookingSchema = z.object({
   date: z.date({ required_error: 'Please select a date.' }),
   time: z.string().min(1, 'Please select a time.'),
   location: z.string().optional(),
+  name: z.string().min(1, 'Please enter your name.'),
+  email: z.string().email('Please enter a valid email address.'),
+  phone: z.string().min(10, 'Please enter a valid phone number.'),
 }).refine(data => data.serviceType !== 'mobile' || (data.location && data.location.trim() !== ''), {
   message: 'Location is required for mobile services.',
   path: ['location'],
@@ -88,6 +91,9 @@ export default function BookingPage() {
       date: data.date.toISOString(),
       time: data.time,
       price: calculateQuote().toString(),
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
       ...(data.location && { location: data.location }),
     });
     router.push(`/booking/contract?${query.toString()}`);
@@ -234,6 +240,34 @@ export default function BookingPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Contact Info */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-headline text-2xl">4. Your Contact Information</CardTitle>
+              <CardDescription>We need your details to finalize the booking.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input id="name" placeholder="Jane Doe" {...form.register('name')} />
+                    {errors.name && <p className="text-destructive text-sm">{errors.name.message}</p>}
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input id="email" type="email" placeholder="jane@example.com" {...form.register('email')} />
+                    {errors.email && <p className="text-destructive text-sm">{errors.email.message}</p>}
+                </div>
+              </div>
+              <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input id="phone" type="tel" placeholder="(123) 456-7890" {...form.register('phone')} />
+                  {errors.phone && <p className="text-destructive text-sm">{errors.phone.message}</p>}
+              </div>
+            </CardContent>
+          </Card>
+
         </div>
 
         {/* Quote Summary */}
@@ -294,7 +328,7 @@ export default function BookingPage() {
             </CardContent>
             <CardFooter>
               <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={!selectedService}>
-                Proceed to Contract
+                Generate Quote & Proceed
               </Button>
             </CardFooter>
           </Card>
