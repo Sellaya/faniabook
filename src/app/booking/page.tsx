@@ -41,26 +41,27 @@ const bookingSchema = z.object({
   }),
   date: z.date({ required_error: 'Please select a date.' }),
   time: z.string().min(1, 'Please select a time.'),
-  location: z.string().optional(),
   name: z.string().min(1, 'Please enter your name.'),
   email: z.string().email('Please enter a valid email address.'),
   phone: z.string().min(10, 'Please enter a valid phone number.'),
+  streetAddress: z.string().optional(),
+  postalCode: z.string().optional(),
 }).refine(data => {
   if (data.serviceType === 'mobile') {
-    return data.location && data.location.trim() !== '';
+    return data.streetAddress && data.streetAddress.trim() !== '';
   }
   return true;
 }, {
-  message: 'Location is required for mobile services.',
-  path: ['location'],
+  message: 'Street address is required for mobile services.',
+  path: ['streetAddress'],
 }).refine(data => {
-    if (data.serviceType === 'mobile' && data.location) {
-        return data.location.toLowerCase().includes('ontario');
-    }
-    return true;
+  if (data.serviceType === 'mobile') {
+    return data.postalCode && data.postalCode.trim() !== '';
+  }
+  return true;
 }, {
-    message: 'Service is only available in Ontario.',
-    path: ['location'],
+  message: 'Postal code is required for mobile services.',
+  path: ['postalCode'],
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
@@ -92,6 +93,11 @@ export default function BookingPage() {
   };
 
   const onSubmit = (data: BookingFormData) => {
+    let location;
+    if (data.serviceType === 'mobile' && data.streetAddress && data.postalCode) {
+        location = `${data.streetAddress}, Ontario, ${data.postalCode}`;
+    }
+
     const query = new URLSearchParams({
       serviceId: data.serviceId,
       serviceType: data.serviceType,
@@ -101,7 +107,7 @@ export default function BookingPage() {
       name: data.name,
       email: data.email,
       phone: data.phone,
-      ...(data.location && { location: data.location }),
+      ...(location && { location: location }),
     });
     router.push(`/booking/contract?${query.toString()}`);
   };
@@ -193,15 +199,33 @@ export default function BookingPage() {
             )}
             
             {watchedServiceType === 'mobile' && (
-              <div>
-                <Label htmlFor="location" className="text-base font-medium">Your Address</Label>
-                <Input
-                  id="location"
-                  placeholder="Enter your address in Ontario"
-                  className="mt-2"
-                  {...form.register('location')}
-                />
-                 {errors.location && <p className="text-destructive mt-2 text-sm">{errors.location.message}</p>}
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="streetAddress" className="text-base font-medium">Street Address</Label>
+                  <Input
+                    id="streetAddress"
+                    placeholder="e.g., 123 Main St"
+                    className="mt-2"
+                    {...form.register('streetAddress')}
+                  />
+                  {errors.streetAddress && <p className="text-destructive mt-2 text-sm">{errors.streetAddress.message}</p>}
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <Label htmlFor="province" className="text-base font-medium">Province</Label>
+                        <Input id="province" value="Ontario" disabled className="mt-2"/>
+                    </div>
+                    <div>
+                        <Label htmlFor="postalCode" className="text-base font-medium">Postal Code</Label>
+                        <Input
+                            id="postalCode"
+                            placeholder="e.g., A1B 2C3"
+                            className="mt-2"
+                            {...form.register('postalCode')}
+                        />
+                        {errors.postalCode && <p className="text-destructive mt-2 text-sm">{errors.postalCode.message}</p>}
+                    </div>
+                </div>
               </div>
             )}
           </CardContent>
