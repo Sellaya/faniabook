@@ -1,5 +1,3 @@
-'use server';
-
 import { initializeApp, getApps, getApp, App } from 'firebase-admin/app';
 
 const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
