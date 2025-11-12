@@ -18,7 +18,10 @@ export async function register(prevState: { message: string }, formData: FormDat
       displayName: name,
     });
   } catch (e: any) {
-    return { message: e.message };
+    if (e.code === 'auth/email-already-exists') {
+        return { message: 'An account with this email already exists.' };
+    }
+    return { message: 'An unexpected error occurred. Please try again.' };
   }
 
   redirect('/');
