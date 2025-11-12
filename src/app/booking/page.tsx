@@ -298,13 +298,14 @@ export default function BookingPage() {
                   {errors.date && <p className="text-destructive mt-1 text-sm">{errors.date.message}</p>}
 
                 <div>
-                  <Label className="text-base font-medium">Available Time Slots</Label>
+                  <Label className="text-base font-medium">Get Ready Time</Label>
+                  <p className="text-sm text-muted-foreground mb-2">This is when the artist will arrive and begin the service.</p>
                   <Controller
                     name="time"
                     control={control}
                     render={({ field }) => (
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger className="mt-2">
+                        <SelectTrigger>
                           <SelectValue placeholder="Select a time" />
                         </SelectTrigger>
                         <SelectContent>
