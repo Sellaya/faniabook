@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { services } from '@/app/data';
@@ -20,7 +21,7 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative w-full bg-gradient-to-br from-primary/10 via-background to-background pt-16 md:pt-24 pb-8 md:pb-12">
+      <section className="relative w-full bg-gradient-to-br from-primary/10 via-background to-background pt-16 md:pt-24 pb-4 md:pb-8">
         {heroImage && (
             <Image
                 src={heroImage.imageUrl}
@@ -47,7 +48,7 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="w-full bg-background pt-8 md:pt-12 pb-16 md:pb-24">
+      <section id="services" className="w-full bg-background pt-4 md:pt-8 pb-16 md:pb-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-headline text-3xl font-bold text-primary md:text-4xl">Our Services</h2>
