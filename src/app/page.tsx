@@ -3,6 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { services } from '@/app/data';
 import Link from 'next/link';
 import { ArrowRight, Brush, Sparkles, Users, BookOpen, Star } from 'lucide-react';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+
 
 export default function Home() {
   const serviceIcons: { [key: string]: React.ElementType } = {
@@ -12,16 +15,28 @@ export default function Home() {
     'makeup-classes': BookOpen,
   };
 
+  const heroImage = PlaceHolderImages.find(p => p.id === 'hero-background');
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative w-full bg-gradient-to-br from-primary/10 via-background to-background py-16 md:py-24">
+        {heroImage && (
+            <Image
+                src={heroImage.imageUrl}
+                alt={heroImage.description}
+                fill
+                className="absolute inset-0 -z-10 h-full w-full object-cover opacity-10"
+                priority
+                data-ai-hint={heroImage.imageHint}
+            />
+        )}
         <div className="container mx-auto px-4 text-center">
           <h1 className="font-headline text-4xl font-bold text-primary md:text-6xl">
             Elegance & Artistry, Redefined.
           </h1>
           <p className="mt-4 max-w-2xl mx-auto font-body text-md text-muted-foreground md:text-lg">
-            Discover a world of beauty with FaniaBook. We offer bespoke makeup services for Black skin, making your special moments unforgettable.
+            Discover a world of beauty with FaniaBook. We offer bespoke makeup services, making your special moments unforgettable.
           </p>
           <Button asChild className="mt-6 bg-accent text-accent-foreground hover:bg-accent/90" size="lg">
             <Link href="/booking">
@@ -52,13 +67,6 @@ export default function Home() {
                         <CardTitle className="font-headline text-2xl">{service.name}</CardTitle>
                       </div>
                       <CardDescription>{service.description}</CardDescription>
-                    </div>
-                    <div className="mt-4 text-right">
-                       <Button asChild variant="link" className="text-accent">
-                          <Link href="/booking">
-                           Book Now <ArrowRight className="ml-2 h-4 w-4" />
-                          </Link>
-                       </Button>
                     </div>
                   </div>
                 </Card>
