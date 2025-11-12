@@ -89,9 +89,13 @@ export default function BookingPage() {
   const serviceId = watch('serviceId');
 
   useEffect(() => {
+    if (serviceId === 'makeup-classes') {
+      router.push('/booking/consultation');
+      return;
+    }
     const service = services.find(s => s.id === serviceId) || null;
     setSelectedService(service);
-  }, [serviceId])
+  }, [serviceId, router])
 
   useEffect(() => {
     const checkBookingConflict = () => {
@@ -178,179 +182,183 @@ export default function BookingPage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-headline text-xl">2. Choose Your Options</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label className="text-base font-medium">Service Type</Label>
-              <Controller
-                name="serviceType"
-                control={control}
-                render={({ field }) => (
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="mt-2 grid grid-cols-2 gap-3"
-                  >
-                    <Label className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-3 text-sm hover:bg-accent/50 [&:has([data-state=checked])]:border-primary">
-                      <RadioGroupItem value="in-studio" className="sr-only" />
-                      <Building className="mb-2 h-5 w-5" />
-                      In-Studio
-                    </Label>
-                    <Label className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-3 text-sm hover:bg-accent/50 [&:has([data-state=checked])]:border-primary">
-                      <RadioGroupItem value="mobile" className="sr-only" />
-                      <MapPin className="mb-2 h-5 w-5" />
-                      Mobile Service
-                    </Label>
-                  </RadioGroup>
-                )}
-              />
-               {errors.serviceType && <p className="text-destructive mt-2 text-sm">{errors.serviceType.message}</p>}
-            </div>
-
-            {watchedServiceType === 'in-studio' && (
-              <Alert>
-                <Building className="h-4 w-4" />
-                <AlertTitle>Our Studio Address</AlertTitle>
-                <AlertDescription>
-                  123 Beauty Lane, Toronto, Ontario, M5B 2H1
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            {watchedServiceType === 'mobile' && (
-              <div className="space-y-4">
+        {selectedService && selectedService.id !== 'makeup-classes' && (
+          <>
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-headline text-xl">2. Choose Your Options</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="streetAddress" className="text-base font-medium">Street Address</Label>
-                  <Input
-                    id="streetAddress"
-                    placeholder="e.g., 123 Main St"
-                    className="mt-2"
-                    {...form.register('streetAddress')}
-                  />
-                  {errors.streetAddress && <p className="text-destructive mt-2 text-sm">{errors.streetAddress.message}</p>}
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <Label htmlFor="province" className="text-base font-medium">Province</Label>
-                        <Input id="province" value="Ontario" disabled className="mt-2"/>
-                    </div>
-                    <div>
-                        <Label htmlFor="postalCode" className="text-base font-medium">Postal Code</Label>
-                        <Input
-                            id="postalCode"
-                            placeholder="e.g., A1B 2C3"
-                            className="mt-2"
-                            {...form.register('postalCode')}
-                        />
-                        {errors.postalCode && <p className="text-destructive mt-2 text-sm">{errors.postalCode.message}</p>}
-                    </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-headline text-xl">3. Select Date & Time</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Controller
-                name="date"
-                control={control}
-                render={({ field }) => (
-                  <Popover open={isDatePickerOpen} onOpenChange={setDatePickerOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
+                  <Label className="text-base font-medium">Service Type</Label>
+                  <Controller
+                    name="serviceType"
+                    control={control}
+                    render={({ field }) => (
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="mt-2 grid grid-cols-2 gap-3"
                       >
-                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={(date) => {
-                          field.onChange(date);
-                          setDatePickerOpen(false);
-                        }}
-                        disabled={(date) => date < new Date() || date < new Date("1900-01-01")}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                )}
-              />
-               {errors.date && <p className="text-destructive mt-1 text-sm">{errors.date.message}</p>}
+                        <Label className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-3 text-sm hover:bg-accent/50 [&:has([data-state=checked])]:border-primary">
+                          <RadioGroupItem value="in-studio" className="sr-only" />
+                          <Building className="mb-2 h-5 w-5" />
+                          In-Studio
+                        </Label>
+                        <Label className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-3 text-sm hover:bg-accent/50 [&:has([data-state=checked])]:border-primary">
+                          <RadioGroupItem value="mobile" className="sr-only" />
+                          <MapPin className="mb-2 h-5 w-5" />
+                          Mobile Service
+                        </Label>
+                      </RadioGroup>
+                    )}
+                  />
+                  {errors.serviceType && <p className="text-destructive mt-2 text-sm">{errors.serviceType.message}</p>}
+                </div>
 
-            <div>
-               <Label className="text-base font-medium">Available Time Slots</Label>
-              <Controller
-                name="time"
-                control={control}
-                render={({ field }) => (
-                   <Select onValueChange={field.onChange} defaultValue={field.value}>
-                     <SelectTrigger className="mt-2">
-                       <SelectValue placeholder="Select a time" />
-                     </SelectTrigger>
-                     <SelectContent>
-                       {availableTimes.map(time => (
-                         <SelectItem key={time} value={time}>{time}</SelectItem>
-                       ))}
-                     </SelectContent>
-                   </Select>
-                )}
-              />
-               {errors.time && <p className="text-destructive mt-2 text-sm">{errors.time.message}</p>}
-            </div>
-
-            {isSlotBooked && (
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Slot Unavailable</AlertTitle>
+                {watchedServiceType === 'in-studio' && (
+                  <Alert>
+                    <Building className="h-4 w-4" />
+                    <AlertTitle>Our Studio Address</AlertTitle>
                     <AlertDescription>
-                        This time slot is already booked. Please select a different time or contact Fania directly to inquire about this date.
+                      123 Beauty Lane, Toronto, Ontario, M5B 2H1
                     </AlertDescription>
-                </Alert>
-            )}
+                  </Alert>
+                )}
+                
+                {watchedServiceType === 'mobile' && (
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="streetAddress" className="text-base font-medium">Street Address</Label>
+                      <Input
+                        id="streetAddress"
+                        placeholder="e.g., 123 Main St"
+                        className="mt-2"
+                        {...form.register('streetAddress')}
+                      />
+                      {errors.streetAddress && <p className="text-destructive mt-2 text-sm">{errors.streetAddress.message}</p>}
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <Label htmlFor="province" className="text-base font-medium">Province</Label>
+                            <Input id="province" value="Ontario" disabled className="mt-2"/>
+                        </div>
+                        <div>
+                            <Label htmlFor="postalCode" className="text-base font-medium">Postal Code</Label>
+                            <Input
+                                id="postalCode"
+                                placeholder="e.g., A1B 2C3"
+                                className="mt-2"
+                                {...form.register('postalCode')}
+                            />
+                            {errors.postalCode && <p className="text-destructive mt-2 text-sm">{errors.postalCode.message}</p>}
+                        </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-          </CardContent>
-        </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-headline text-xl">3. Select Date & Time</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Controller
+                    name="date"
+                    control={control}
+                    render={({ field }) => (
+                      <Popover open={isDatePickerOpen} onOpenChange={setDatePickerOpen}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={(date) => {
+                              field.onChange(date);
+                              setDatePickerOpen(false);
+                            }}
+                            disabled={(date) => date < new Date() || date < new Date("1900-01-01")}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    )}
+                  />
+                  {errors.date && <p className="text-destructive mt-1 text-sm">{errors.date.message}</p>}
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-headline text-xl">4. Your Contact Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-              <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" placeholder="Jane Doe" {...form.register('name')} />
-                  {errors.name && <p className="text-destructive text-sm">{errors.name.message}</p>}
-              </div>
-              <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" placeholder="jane@example.com" {...form.register('email')} />
-                  {errors.email && <p className="text-destructive text-sm">{errors.email.message}</p>}
-              </div>
-            <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" type="tel" placeholder="(123) 456-7890" {...form.register('phone')} />
-                {errors.phone && <p className="text-destructive text-sm">{errors.phone.message}</p>}
-            </div>
-          </CardContent>
-        </Card>
+                <div>
+                  <Label className="text-base font-medium">Available Time Slots</Label>
+                  <Controller
+                    name="time"
+                    control={control}
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className="mt-2">
+                          <SelectValue placeholder="Select a time" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableTimes.map(time => (
+                            <SelectItem key={time} value={time}>{time}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.time && <p className="text-destructive mt-2 text-sm">{errors.time.message}</p>}
+                </div>
 
-        <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={!selectedService || isSlotBooked}>
-            Generate Quote & Proceed
-        </Button>
+                {isSlotBooked && (
+                    <Alert variant="destructive">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>Slot Unavailable</AlertTitle>
+                        <AlertDescription>
+                            This time slot is already booked. Please select a different time or contact Fania directly to inquire about this date.
+                        </AlertDescription>
+                    </Alert>
+                )}
+
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-headline text-xl">4. Your Contact Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                      <Label htmlFor="name">Full Name</Label>
+                      <Input id="name" placeholder="Jane Doe" {...form.register('name')} />
+                      {errors.name && <p className="text-destructive text-sm">{errors.name.message}</p>}
+                  </div>
+                  <div className="space-y-2">
+                      <Label htmlFor="email">Email Address</Label>
+                      <Input id="email" type="email" placeholder="jane@example.com" {...form.register('email')} />
+                      {errors.email && <p className="text-destructive text-sm">{errors.email.message}</p>}
+                  </div>
+                <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input id="phone" type="tel" placeholder="(123) 456-7890" {...form.register('phone')} />
+                    {errors.phone && <p className="text-destructive text-sm">{errors.phone.message}</p>}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={!selectedService || isSlotBooked}>
+                Generate Quote & Proceed
+            </Button>
+          </>
+        )}
       </form>
     </div>
   );
