@@ -3,37 +3,37 @@
     {
       "id": "hero-background",
       "description": "A sophisticated makeup artist's toolkit with brushes, palettes, and cosmetics neatly arranged.",
-      "imageUrl": "https://images.unsplash.com/photo-1636023730877-233b9237d4ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtYWtldXAlMjBhcnRpc3R8ZW58MHx8fHwxNzYyODk4NjM5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "makeup artist"
+      "imageUrl": "https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxibGFjayUyMG1ha2V1cCUyMGFydGlzdHxlbnwwfHx8fDE3NjM0MzkzOTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Black makeup artist"
     },
     {
       "id": "bridal-makeup",
-      "description": "A beautiful bride with elegant and flawless makeup on her wedding day.",
-      "imageUrl": "https://images.unsplash.com/photo-1684868268327-7e5590bcfbd6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxicmlkYWwlMjBtYWtldXB8ZW58MHx8fHwxNzYyOTE5MjcyfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "bridal makeup"
+      "description": "A beautiful Black bride with elegant and flawless makeup on her wedding day.",
+      "imageUrl": "https://images.unsplash.com/photo-1620011831122-85098c4b2b2b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibGFjayUyMGJyaWRhbCUyMG1ha2V1cHxlbnwwfHx8fDE3NjM0Mzk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Black bridal makeup"
     },
     {
       "id": "semi-bridal-makeup",
-      "description": "A woman with stunning makeup for a pre-wedding event or reception.",
-      "imageUrl": "https://images.unsplash.com/photo-1577909698488-3c3705c9c265?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxlbGVnYW50JTIwbWFrZXVwfGVufDB8fHx8MTc2MjkwNzk2Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "elegant makeup"
+      "description": "A Black woman with stunning makeup for a pre-wedding event or reception.",
+      "imageUrl": "https://images.unsplash.com/photo-1619428293988-5136f6858a7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxnbGFtb3VyJTIwYmxhY2slMjB3b21hbnxlbnwwfHx8fDE3NjM0Mzk1MzZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "glamour makeup"
     },
     {
       "id": "party-makeup",
-      "description": "A glamorous look with bold lipstick and smokey eyes, perfect for a party.",
-      "imageUrl": "https://images.unsplash.com/photo-1760981764541-dfbc3290f9f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwYXJ0eSUyMG1ha2V1cHxlbnwwfHx8fDE3NjI5Nzk5NTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "A glamorous look on a Black woman, perfect for a party.",
+      "imageUrl": "https://images.unsplash.com/photo-1634629452331-502f9745c494?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxibGFjayUyMHdvbWFuJTIwcGFydHklMjBtYWtldXB8ZW58MHx8fHwxNzYzNDM5NTc4fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "party makeup"
     },
     {
       "id": "makeup-classes",
-      "description": "A makeup artist teaching a student application techniques in a well-lit studio.",
-      "imageUrl": "https://images.unsplash.com/photo-1554881070-dda563db63de?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtYWtldXAlMjBjbGFzc3xlbnwwfHx8fDE3NjI5Nzk5NTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "A makeup artist teaching a Black student application techniques in a well-lit studio.",
+      "imageUrl": "https://images.unsplash.com/photo-1590439329243-698d251c4f5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYWtldXAlMjBjbGFzc3xlbnwwfHx8fDE3NjM0Mzk2MTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "makeup class"
     },
     {
       "id": "profile-avatar",
-      "description": "A placeholder avatar for a user profile.",
-      "imageUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwcm9maWxlJTIwYXZhdGFyfGVufDB8fHx8MTc2Mjg2MzQxOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "A placeholder avatar for a user profile, featuring a Black woman.",
+      "imageUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYzNDM5NjQ3fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "profile avatar"
     }
   ]

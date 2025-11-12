@@ -86,6 +86,12 @@ export default function BookingPage() {
   const watchedServiceType = watch('serviceType');
   const watchedDate = watch('date');
   const watchedTime = watch('time');
+  const serviceId = watch('serviceId');
+
+  useEffect(() => {
+    const service = services.find(s => s.id === serviceId) || null;
+    setSelectedService(service);
+  }, [serviceId])
 
   useEffect(() => {
     const checkBookingConflict = () => {
@@ -110,7 +116,7 @@ export default function BookingPage() {
 
   const calculateQuote = () => {
     if (!selectedService) return 0;
-    let total = selectedService.price;
+    let total = selectedService.price || 0;
     if (watchedServiceType === 'mobile') {
       total += 50; // Mobile service fee
     }
@@ -156,11 +162,7 @@ export default function BookingPage() {
               name="serviceId"
               control={control}
               render={({ field }) => (
-                 <Select onValueChange={(value) => {
-                    field.onChange(value);
-                    const currentService = services.find(s => s.id === value) || null;
-                    setSelectedService(currentService);
-                 }} defaultValue={field.value}>
+                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                    <SelectTrigger>
                      <SelectValue placeholder="Select a service" />
                    </SelectTrigger>

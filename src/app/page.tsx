@@ -23,7 +23,7 @@ export default function Home() {
             Elegance & Artistry, Redefined.
           </h1>
           <p className="mt-4 max-w-2xl mx-auto font-body text-lg text-muted-foreground md:text-xl">
-            Discover a world of beauty with FaniaBook. We offer bespoke makeup services to make your special moments unforgettable.
+            Discover a world of beauty with FaniaBook. We offer bespoke makeup services for Black skin, making your special moments unforgettable.
           </p>
           <Button asChild className="mt-8 bg-accent text-accent-foreground hover:bg-accent/90" size="lg">
             <Link href="/booking">
@@ -42,7 +42,7 @@ export default function Home() {
               From bridal glamour to professional classes, we cater to all your beauty needs with passion and precision.
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {services.map((service) => {
               const serviceImage = PlaceHolderImages.find((img) => img.id === service.imageId);
               const Icon = serviceIcons[service.id] || Brush;
@@ -70,7 +70,7 @@ export default function Home() {
                     <div className="mt-4 text-right">
                        <Button asChild variant="link" className="text-accent">
                           <Link href="/booking">
-                           Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                           Book Now <ArrowRight className="ml-2 h-4 w-4" />
                           </Link>
                        </Button>
                     </div>
