@@ -122,10 +122,10 @@ function ContractContent() {
               <p className="mb-2">This agreement is between you ("the Client") and FaniaBook ("the Artist") for makeup services.</p>
               
               <h4 className="font-semibold mt-4 mb-1">1. Booking & Payment:</h4>
-              <p className="mb-2">For 'Mobile Services', a non-refundable advance payment of 50% is required to secure your booking. The remaining balance is due on the day of the appointment. For 'In-Studio' services, full payment is due at the time of your appointment.</p>
+              <p className="mb-2">For 'Mobile Services', a non-refundable advance payment of 50% is required to secure your booking. The remaining balance is due on the day of the appointment. For 'In-Studio' services, clients have the option to pay a 50% non-refundable deposit to secure the booking, or pay the full amount at the time of the appointment.</p>
               
               <h4 className="font-semibold mt-4 mb-1">2. Cancellations:</h4>
-              <p className="mb-2">Cancellations must be made at least 48 hours in advance. The advance payment for mobile services is non-refundable. For in-studio services, a cancellation fee may apply if notice is not given within 48 hours.</p>
+              <p className="mb-2">Cancellations must be made at least 48 hours in advance. Any advance payments/deposits are non-refundable. For in-studio services where no deposit was made, a cancellation fee may apply if notice is not given within 48 hours.</p>
 
               <h4 className="font-semibold mt-4 mb-1">3. Artist's Obligations:</h4>
               <p className="mb-2">The Artist will provide the agreed-upon makeup services at the specified time and location. The Artist will use professional-grade products and maintain high standards of hygiene.</p>

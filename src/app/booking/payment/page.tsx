@@ -10,7 +10,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
-import { CreditCard, Info } from 'lucide-react';
+import { CreditCard, Info, Store } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 function PaymentContent() {
   const searchParams = useSearchParams();
@@ -23,6 +25,8 @@ function PaymentContent() {
     price: number;
     advancePayment: number;
   } | null>(null);
+  
+  const [inStudioPaymentOption, setInStudioPaymentOption] = useState('pay-in-studio');
 
   useEffect(() => {
     const serviceId = searchParams.get('serviceId');
@@ -35,7 +39,7 @@ function PaymentContent() {
       serviceType,
       date: searchParams.get('date') ? new Date(searchParams.get('date')!) : null,
       price,
-      advancePayment: serviceType === 'mobile' ? price * 0.5 : 0,
+      advancePayment: price * 0.5,
     });
   }, [searchParams]);
 
@@ -65,6 +69,13 @@ function PaymentContent() {
 
   const { service, serviceType, date, price, advancePayment } = bookingDetails;
   
+  const showPaymentForm = serviceType === 'mobile' || (serviceType === 'in-studio' && inStudioPaymentOption === 'pay-deposit');
+  const buttonText = () => {
+      if (serviceType === 'mobile') return `Pay $${advancePayment.toFixed(2)} & Confirm`;
+      if (serviceType === 'in-studio' && inStudioPaymentOption === 'pay-deposit') return `Pay $${advancePayment.toFixed(2)} & Confirm`;
+      return 'Confirm Booking';
+  }
+
   return (
     <div className="container mx-auto max-w-2xl py-12 px-4">
       <Card className="shadow-lg">
@@ -90,37 +101,53 @@ function PaymentContent() {
           )}
 
           {serviceType === 'in-studio' && (
-            <Alert>
-              <Info className="h-4 w-4" />
-              <AlertTitle>In-Studio Payment</AlertTitle>
-              <AlertDescription>
-                No advance payment is needed. You can pay the full amount in person on the day of your appointment.
-              </AlertDescription>
-            </Alert>
+            <div>
+              <Label className="font-headline text-xl">Payment Option</Label>
+                <RadioGroup
+                    value={inStudioPaymentOption}
+                    onValueChange={setInStudioPaymentOption}
+                    className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-3"
+                >
+                    <Label className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-sm hover:bg-accent/50 [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="pay-in-studio" className="sr-only" />
+                        <Store className="mb-2 h-6 w-6" />
+                        <span className="font-semibold">Pay In-Studio</span>
+                        <span className="text-xs text-muted-foreground text-center mt-1">Pay the full amount in person on the day of your appointment.</span>
+                    </Label>
+                    <Label className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-sm hover:bg-accent/50 [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="pay-deposit" className="sr-only" />
+                        <CreditCard className="mb-2 h-6 w-6" />
+                        <span className="font-semibold">Pay 50% Deposit Now</span>
+                        <span className="text-xs text-muted-foreground text-center mt-1">Secure your spot by paying ${advancePayment.toFixed(2)} today.</span>
+                    </Label>
+              </RadioGroup>
+            </div>
           )}
 
-          <Card className="bg-background">
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2 font-headline"><CreditCard/> Payment Details</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <p className="text-center text-muted-foreground">
-                    This is a mock payment form. In a real application, a secure payment gateway like Stripe would be integrated here.
-                </p>
-                <div className="mt-4 space-y-4">
-                    {/* Mock Stripe Elements */}
-                    <div className="h-10 w-full rounded-md border border-input px-3 py-2">Card Number</div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="h-10 w-full rounded-md border border-input px-3 py-2">MM / YY</div>
-                        <div className="h-10 w-full rounded-md border border-input px-3 py-2">CVC</div>
-                    </div>
-                </div>
-            </CardContent>
-          </Card>
+          {showPaymentForm && (
+            <Card className="bg-background">
+              <CardHeader>
+                  <CardTitle className="flex items-center gap-2 font-headline"><CreditCard/> Payment Details</CardTitle>
+              </CardHeader>
+              <CardContent>
+                  <p className="text-center text-muted-foreground">
+                      This is a mock payment form. In a real application, a secure payment gateway like Stripe would be integrated here.
+                  </p>
+                  <div className="mt-4 space-y-4">
+                      {/* Mock Stripe Elements */}
+                      <div className="h-10 w-full rounded-md border border-input px-3 py-2">Card Number</div>
+                      <div className="grid grid-cols-2 gap-4">
+                          <div className="h-10 w-full rounded-md border border-input px-3 py-2">MM / YY</div>
+                          <div className="h-10 w-full rounded-md border border-input px-3 py-2">CVC</div>
+                      </div>
+                  </div>
+              </CardContent>
+            </Card>
+          )}
         </CardContent>
         <CardFooter>
             <Button onClick={handleConfirm} className="w-full bg-primary hover:bg-primary/90" size="lg">
-                {serviceType === 'mobile' ? `Pay $${advancePayment.toFixed(2)} & Confirm` : 'Confirm Booking'}
+              {buttonText()}
             </Button>
         </CardFooter>
       </Card>
