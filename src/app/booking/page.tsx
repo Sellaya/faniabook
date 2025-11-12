@@ -300,8 +300,8 @@ export default function BookingPage() {
                 <div>
                   <Label className="text-base font-medium">Get Ready Time</Label>
                   <p className="text-sm text-muted-foreground mb-2">
-                    {watchedServiceType === 'mobile' 
-                      ? 'This is when the artist will arrive and begin the service.'
+                    {watchedServiceType === 'mobile'
+                      ? 'this is the time when you want to get your makeup finished'
                       : 'This is the time when you want to get your makeup finished in studio.'
                     }
                   </p>
