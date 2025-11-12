@@ -13,10 +13,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Search, Info, CheckCircle, Clock } from 'lucide-react';
+import { Search, Info, Mail } from 'lucide-react';
 import { detailedMockBookings } from '@/app/data';
 import type { DetailedMockBooking } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 export default function BookingStatusPage() {
   const [bookingId, setBookingId] = useState('');
@@ -108,6 +109,13 @@ export default function BookingStatusPage() {
                         </Badge>
                     </div>
                   </CardContent>
+                  <CardFooter>
+                     <Button asChild variant="outline">
+                        <Link href={`mailto:contact@faniabook.com?subject=Inquiry about Booking ID: ${bookingDetails.id}`}>
+                            <Mail className="mr-2 h-4 w-4"/> Contact Admin
+                        </Link>
+                    </Button>
+                  </CardFooter>
                 </Card>
               )}
               {error && (
