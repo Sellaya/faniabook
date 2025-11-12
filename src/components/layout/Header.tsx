@@ -33,19 +33,18 @@ export default function Header() {
     icon: React.ElementType;
     className?: string;
   }) => (
-    <Link href={href} legacyBehavior passHref>
-      <a
-        className={cn(
-          'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-          pathname === href
-            ? 'bg-primary/10 text-primary'
-            : 'text-muted-foreground hover:bg-primary/5 hover:text-primary',
-          className
-        )}
-      >
-        <Icon className="h-4 w-4" />
-        {label}
-      </a>
+    <Link
+      href={href}
+      className={cn(
+        'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+        pathname === href
+          ? 'bg-primary/10 text-primary'
+          : 'text-muted-foreground hover:bg-primary/5 hover:text-primary',
+        className
+      )}
+    >
+      <Icon className="h-4 w-4" />
+      {label}
     </Link>
   );
 
