@@ -67,12 +67,8 @@ export default function BookingPage() {
 
   const { watch, control, formState: { errors } } = form;
 
-  const watchedServiceId = watch('serviceId');
   const watchedServiceType = watch('serviceType');
-  const watchedDate = watch('date');
-  const watchedTime = watch('time');
-  const watchedLocation = watch('location');
-
+  
   const calculateQuote = () => {
     if (!selectedService) return 0;
     let total = selectedService.price;
@@ -105,7 +101,6 @@ export default function BookingPage() {
       </header>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Service Selection */}
         <Card>
           <CardHeader>
             <CardTitle className="font-headline text-xl">1. Select a Service</CardTitle>
@@ -123,7 +118,8 @@ export default function BookingPage() {
                         key={service.id}
                         onClick={() => {
                           field.onChange(service.id);
-                          setSelectedService(service);
+                          const currentService = services.find(s => s.id === service.id) || null;
+                          setSelectedService(currentService);
                         }}
                         className={cn(
                           "rounded-md border p-3 cursor-pointer transition-all text-center",
@@ -141,7 +137,6 @@ export default function BookingPage() {
           </CardContent>
         </Card>
 
-        {/* Service Options */}
         <Card>
           <CardHeader>
             <CardTitle className="font-headline text-xl">2. Choose Your Options</CardTitle>
@@ -188,7 +183,6 @@ export default function BookingPage() {
           </CardContent>
         </Card>
 
-        {/* Date & Time */}
         <Card>
           <CardHeader>
             <CardTitle className="font-headline text-xl">3. Select Date & Time</CardTitle>
@@ -232,7 +226,6 @@ export default function BookingPage() {
           </CardContent>
         </Card>
 
-        {/* Contact Info */}
         <Card>
           <CardHeader>
             <CardTitle className="font-headline text-xl">4. Your Contact Information</CardTitle>
@@ -253,54 +246,6 @@ export default function BookingPage() {
                 <Input id="phone" type="tel" placeholder="(123) 456-7890" {...form.register('phone')} />
                 {errors.phone && <p className="text-destructive text-sm">{errors.phone.message}</p>}
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Quote Summary & Action */}
-        <Card className="shadow-md">
-          <CardHeader>
-            <CardTitle className="font-headline text-xl flex items-center gap-2"><DollarSign/> Quote Summary</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {!selectedService ? (
-              <p className="text-muted-foreground text-sm">Select a service to see your quote.</p>
-            ) : (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>{selectedService.name}</span>
-                </div>
-                {watchedServiceType === 'mobile' && (
-                  <div className="flex justify-between text-sm">
-                    <span>Mobile Service Fee</span>
-                  </div>
-                )}
-                <div className="border-t pt-2 mt-2 font-bold text-lg flex justify-between">
-                  <span>Total</span>
-                  <span>${calculateQuote().toFixed(2)}</span>
-                </div>
-
-                <div className="text-xs text-muted-foreground pt-2 space-y-1">
-                  {watchedDate && (
-                    <div className="flex items-center gap-2">
-                      <CalendarIcon className="h-3 w-3" />
-                      <span>{format(watchedDate, 'PPP')}</span>
-                    </div>
-                  )}
-                  {watchedTime && (
-                     <div className="flex items-center gap-2">
-                      <Clock className="h-3 w-3" />
-                      <span>{watchedTime}</span>
-                    </div>
-                  )}
-                   {watchedServiceType === 'mobile' && watchedLocation && (
-                     <div className="flex items-start gap-2">
-                      <MapPin className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                      <span>{watchedLocation}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
           </CardContent>
           <CardFooter>
             <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={!selectedService}>
