@@ -16,8 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CheckCircle, BookOpen } from 'lucide-react';
+import { CheckCircle, BookOpen, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 const consultationSchema = z.object({
@@ -68,6 +67,17 @@ export default function ConsultationPage() {
 
   return (
     <div className="container mx-auto max-w-lg py-8 px-4">
+       <div className="relative">
+        <Button
+          variant="outline"
+          size="sm"
+          className="absolute -top-4 left-0"
+          onClick={() => router.push('/booking')}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back
+        </Button>
+      </div>
       <header className="text-center mb-8">
         <div className="inline-flex items-center justify-center rounded-lg bg-primary p-3 mb-4">
             <BookOpen className="h-8 w-8 text-primary-foreground" />
