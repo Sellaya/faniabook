@@ -15,15 +15,15 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative w-full bg-gradient-to-br from-primary/10 via-background to-background py-20 md:py-32">
+      <section className="relative w-full bg-gradient-to-br from-primary/10 via-background to-background py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="font-headline text-5xl font-bold text-primary md:text-7xl">
+          <h1 className="font-headline text-4xl font-bold text-primary md:text-6xl">
             Elegance & Artistry, Redefined.
           </h1>
-          <p className="mt-4 max-w-2xl mx-auto font-body text-lg text-muted-foreground md:text-xl">
+          <p className="mt-4 max-w-2xl mx-auto font-body text-md text-muted-foreground md:text-lg">
             Discover a world of beauty with FaniaBook. We offer bespoke makeup services for Black skin, making your special moments unforgettable.
           </p>
-          <Button asChild className="mt-8 bg-accent text-accent-foreground hover:bg-accent/90" size="lg">
+          <Button asChild className="mt-6 bg-accent text-accent-foreground hover:bg-accent/90" size="lg">
             <Link href="/booking">
               Book Your Appointment <ArrowRight className="ml-2" />
             </Link>
@@ -35,8 +35,8 @@ export default function Home() {
       <section id="services" className="w-full bg-background py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-headline text-4xl font-bold text-primary">Our Services</h2>
-            <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="font-headline text-3xl font-bold text-primary md:text-4xl">Our Services</h2>
+            <p className="mt-2 text-md text-muted-foreground max-w-2xl mx-auto md:text-lg">
               From bridal glamour to professional classes, we cater to all your beauty needs with passion and precision.
             </p>
           </div>
@@ -79,8 +79,8 @@ export default function Home() {
       <section className="w-full bg-primary/5 py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-              <h2 className="font-headline text-4xl font-bold text-primary">What Our Clients Say</h2>
-              <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
+              <h2 className="font-headline text-3xl font-bold text-primary md:text-4xl">What Our Clients Say</h2>
+              <p className="mt-2 text-md text-muted-foreground max-w-2xl mx-auto md:text-lg">
                 We are proud to have delighted our clients. Here's what they think about our service.
               </p>
           </div>
