@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { services } from '@/app/data';
 import type { Service } from '@/lib/types';
@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
-import { CheckCircle, Home, User, Copy } from 'lucide-react';
+import { CheckCircle, Home, Copy } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 
@@ -109,8 +109,8 @@ function SuccessContent() {
               </Link>
             </Button>
             <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
-              <Link href="/profile">
-                <User className="mr-2 h-4 w-4" /> View My Bookings
+              <Link href="/booking/status">
+                <Search className="mr-2 h-4 w-4" /> Check Booking Status
               </Link>
             </Button>
           </div>
