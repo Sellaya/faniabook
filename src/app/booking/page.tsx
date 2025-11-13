@@ -385,7 +385,7 @@ export default function BookingPage() {
               </CardContent>
             </Card>
 
-            <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={!selectedService || isSlotBooked}>
+            <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={!selectedService || isSlotBooked}>
                 Generate Quote & Proceed
             </Button>
           </>
