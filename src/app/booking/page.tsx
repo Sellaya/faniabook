@@ -43,7 +43,7 @@ const bookingSchema = z.object({
   time: z.string().min(1, 'Please select a time.'),
   name: z.string().min(1, 'Please enter your name.'),
   email: z.string().email('Please enter a valid email address.'),
-  phone: z.string().regex(/^\+1\d{10}$/, 'Phone number must be in the format +1XXXXXXXXXX (e.g., +12223334444)'),
+  phone: z.string().regex(/^\(\d{3}\) \d{3}-\d{4}$/, 'Phone number must be in the format (XXX) XXX-XXXX'),
   streetAddress: z.string().optional(),
   postalCode: z.string().optional(),
 }).refine(data => {
@@ -354,8 +354,8 @@ export default function BookingPage() {
                   </div>
                 <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <p className="text-sm text-muted-foreground">Please use the format +1 followed by 10 digits (e.g., +12223334444).</p>
-                    <Input id="phone" type="tel" placeholder="+12223334444" {...form.register('phone')} />
+                    <p className="text-sm text-muted-foreground">Please use the format (XXX) XXX-XXXX.</p>
+                    <Input id="phone" type="tel" placeholder="(647) 123-4567" {...form.register('phone')} />
                     {errors.phone && <p className="text-destructive text-sm mt-1">{errors.phone.message}</p>}
                 </div>
               </CardContent>
