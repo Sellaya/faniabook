@@ -91,7 +91,7 @@ export default function ProfilePage() {
                           {booking.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right">${booking.price.toFixed(2)}</TableCell>
+                      <TableCell className="text-right">CAD {booking.price}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

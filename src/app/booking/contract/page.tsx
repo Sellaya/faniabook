@@ -111,7 +111,7 @@ function ContractContent() {
                         {serviceType === 'mobile' && location && <p><strong>Location:</strong> {location}</p>}
                     </div>
                 </div>
-                 <p className="text-lg font-bold pt-4 text-right"><strong>Total:</strong> ${price.toFixed(2)}</p>
+                 <p className="text-lg font-bold pt-4 text-right"><strong>Total:</strong> CAD {price}</p>
             </CardContent>
           </Card>
 
