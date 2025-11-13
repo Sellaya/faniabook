@@ -14,7 +14,7 @@ import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { useFirestore } from '@/firebase';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { collection } from 'firebase/firestore';
+import { collection, DocumentData } from 'firebase/firestore';
 
 // A simple SVG for the WhatsApp icon
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -65,19 +65,24 @@ function SuccessContent() {
     
     if (service && name && email && phone && date && time) {
         const bookingsColRef = collection(firestore, 'bookings');
-        const bookingData = {
+        const location = searchParams.get('location');
+
+        const bookingData: DocumentData = {
             serviceId: service.id,
             serviceName: service.name,
             serviceType: searchParams.get('serviceType') || '',
             date: date.toISOString(),
             time: time,
             price: Number(searchParams.get('price')) || 0,
-            location: searchParams.get('location') || undefined,
             clientName: name,
             email: email,
             phone: phone,
             status: 'Confirmed'
         };
+
+        if (location) {
+            bookingData.location = location;
+        }
 
         addDocumentNonBlocking(bookingsColRef, bookingData).then(docRef => {
             if (docRef) {
