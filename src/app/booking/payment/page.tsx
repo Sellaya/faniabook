@@ -194,20 +194,12 @@ function PaymentContent() {
           {paymentOption === 'stripe' && requiresDeposit && (
             <Card className="bg-background">
               <CardHeader>
-                  <CardTitle className="flex items-center gap-2 font-headline"><CreditCard/> Credit Card Details</CardTitle>
+                  <CardTitle className="flex items-center gap-2 font-headline"><CreditCard/> Pay with Credit Card</CardTitle>
               </CardHeader>
               <CardContent>
                   <p className="text-center text-muted-foreground">
-                      This is a mock payment form. In a real application, a secure payment gateway like Stripe would be integrated here.
+                      You will be redirected to Stripe to complete your payment securely.
                   </p>
-                  <div className="mt-4 space-y-4">
-                      {/* Mock Stripe Elements */}
-                      <div className="h-10 w-full rounded-md border border-input px-3 py-2">Card Number</div>
-                      <div className="grid grid-cols-2 gap-4">
-                          <div className="h-10 w-full rounded-md border border-input px-3 py-2">MM / YY</div>
-                          <div className="h-10 w-full rounded-md border border-input px-3 py-2">CVC</div>
-                      </div>
-                  </div>
               </CardContent>
             </Card>
           )}
