@@ -36,7 +36,23 @@ export default function ConsultationPage() {
     resolver: zodResolver(consultationSchema),
   });
 
-  const { formState: { errors }, register, handleSubmit } = form;
+  const { formState: { errors }, register, handleSubmit, setValue } = form;
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, '');
+    let formattedValue = '';
+    if (rawValue.length > 0) {
+      formattedValue = '(' + rawValue.substring(0, 3);
+    }
+    if (rawValue.length > 3) {
+      formattedValue += ') ' + rawValue.substring(3, 6);
+    }
+    if (rawValue.length > 6) {
+      formattedValue += '-' + rawValue.substring(6, 10);
+    }
+    setValue('phone', formattedValue, { shouldValidate: true });
+  };
+
 
   const onSubmit = (data: ConsultationFormData) => {
     // In a real app, you would send this data to your backend
@@ -104,7 +120,13 @@ export default function ConsultationPage() {
                 <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
                     <p className="text-sm text-muted-foreground">Please use the format (XXX) XXX-XXXX.</p>
-                    <Input id="phone" type="tel" placeholder="(647) 123-4567" {...register('phone')} />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="(647) 123-4567"
+                      {...register('phone')}
+                      onChange={handlePhoneChange}
+                    />
                     {errors.phone && <p className="text-destructive text-sm mt-1">{errors.phone.message}</p>}
                 </div>
                 <div className="space-y-2">

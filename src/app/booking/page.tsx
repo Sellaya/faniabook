@@ -81,7 +81,7 @@ export default function BookingPage() {
     resolver: zodResolver(bookingSchema),
   });
 
-  const { watch, control, formState: { errors }, getValues } = form;
+  const { watch, control, formState: { errors }, getValues, setValue } = form;
 
   const watchedServiceType = watch('serviceType');
   const watchedDate = watch('date');
@@ -126,6 +126,22 @@ export default function BookingPage() {
     }
     return total;
   };
+  
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, '');
+    let formattedValue = '';
+    if (rawValue.length > 0) {
+      formattedValue = '(' + rawValue.substring(0, 3);
+    }
+    if (rawValue.length > 3) {
+      formattedValue += ') ' + rawValue.substring(3, 6);
+    }
+    if (rawValue.length > 6) {
+      formattedValue += '-' + rawValue.substring(6, 10);
+    }
+    setValue('phone', formattedValue, { shouldValidate: true });
+  };
+
 
   const onSubmit = (data: BookingFormData) => {
     if (isSlotBooked) return;
@@ -355,7 +371,13 @@ export default function BookingPage() {
                 <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
                     <p className="text-sm text-muted-foreground">Please use the format (XXX) XXX-XXXX.</p>
-                    <Input id="phone" type="tel" placeholder="(647) 123-4567" {...form.register('phone')} />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="(647) 123-4567"
+                      {...form.register('phone')}
+                      onChange={handlePhoneChange}
+                    />
                     {errors.phone && <p className="text-destructive text-sm mt-1">{errors.phone.message}</p>}
                 </div>
               </CardContent>
