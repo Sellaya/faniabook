@@ -12,7 +12,8 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
-import { Mail, Phone, User } from 'lucide-react';
+import { Mail, Phone, User, Signature } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 const GST_RATE = 0.13;
 
@@ -21,6 +22,7 @@ function ContractContent() {
   const router = useRouter();
   
   const [agreed, setAgreed] = useState(false);
+  const [signature, setSignature] = useState('');
   const [bookingDetails, setBookingDetails] = useState<{
     service: Service | null;
     serviceType: string;
@@ -59,8 +61,14 @@ function ContractContent() {
 
   const handleProceedToPayment = () => {
     const query = new URLSearchParams(searchParams.toString());
+    query.set('signature', signature);
     router.push(`/booking/payment?${query.toString()}`);
   };
+  
+  const isSignatureValid = () => {
+      if (!bookingDetails || !bookingDetails.name) return false;
+      return signature.trim().toLowerCase() === bookingDetails.name.trim().toLowerCase();
+  }
 
   if (!bookingDetails || !bookingDetails.service || !bookingDetails.date) {
     return (
@@ -148,20 +156,37 @@ function ContractContent() {
             </ScrollArea>
           </div>
 
-          <div className="flex items-center space-x-2 pt-4">
-            <Checkbox id="terms" onCheckedChange={(checked) => setAgreed(checked as boolean)} />
-            <Label htmlFor="terms" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              I have read and agree to the terms and conditions.
-            </Label>
+          <div className="space-y-4 pt-4">
+            <div className="flex items-start space-x-3">
+              <Checkbox id="terms" onCheckedChange={(checked) => setAgreed(checked as boolean)} className="mt-1" />
+              <Label htmlFor="terms" className="text-sm font-medium leading-normal">
+                I have read, understood, and agree to the terms and conditions outlined in the service contract.
+              </Label>
+            </div>
+            
+            <div className="space-y-2">
+                <Label htmlFor="signature" className="font-headline text-lg">Digital Signature</Label>
+                 <div className="relative">
+                    <Signature className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input 
+                        id="signature"
+                        placeholder="Type your full name to sign"
+                        value={signature}
+                        onChange={(e) => setSignature(e.target.value)}
+                        className="pl-10"
+                    />
+                </div>
+                {!isSignatureValid() && signature.length > 0 && <p className="text-sm text-destructive mt-1">Signature must match the client name: {name}</p>}
+            </div>
           </div>
 
           <Button 
             onClick={handleProceedToPayment} 
-            disabled={!agreed} 
+            disabled={!agreed || !isSignatureValid()} 
             className="w-full bg-accent text-accent-foreground hover:bg-accent/90" 
             size="lg"
           >
-            Proceed to Payment
+            Agree & Proceed to Payment
           </Button>
         </CardContent>
       </Card>
