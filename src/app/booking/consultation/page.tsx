@@ -22,7 +22,7 @@ import Link from 'next/link';
 const consultationSchema = z.object({
   name: z.string().min(1, 'Please enter your name.'),
   email: z.string().email('Please enter a valid email address.'),
-  phone: z.string().min(10, 'Please enter a valid phone number.'),
+  phone: z.string().regex(/^\+1\d{10}$/, 'Phone number must be in the format +1XXXXXXXXXX (e.g., +12223334444)'),
   message: z.string().min(10, 'Please enter a message with at least 10 characters.'),
 });
 
@@ -103,7 +103,7 @@ export default function ConsultationPage() {
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" type="tel" placeholder="(123) 456-7890" {...register('phone')} />
+                    <Input id="phone" type="tel" placeholder="+12223334444" {...register('phone')} />
                     {errors.phone && <p className="text-destructive text-sm mt-1">{errors.phone.message}</p>}
                 </div>
                 <div className="space-y-2">

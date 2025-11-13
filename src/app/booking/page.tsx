@@ -43,7 +43,7 @@ const bookingSchema = z.object({
   time: z.string().min(1, 'Please select a time.'),
   name: z.string().min(1, 'Please enter your name.'),
   email: z.string().email('Please enter a valid email address.'),
-  phone: z.string().min(10, 'Please enter a valid phone number.'),
+  phone: z.string().regex(/^\+1\d{10}$/, 'Phone number must be in the format +1XXXXXXXXXX (e.g., +12223334444)'),
   streetAddress: z.string().optional(),
   postalCode: z.string().optional(),
 }).refine(data => {
@@ -302,7 +302,7 @@ export default function BookingPage() {
                   <p className="text-sm text-muted-foreground mb-2">
                     {watchedServiceType === 'mobile'
                       ? 'this is the time when you want to get your makeup finished'
-                      : 'This is the time when you want to get your makeup finished in studio.'
+                      : 'this is the time when you want to get your makeup finished in studio'
                     }
                   </p>
                   <Controller
@@ -354,7 +354,7 @@ export default function BookingPage() {
                   </div>
                 <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" type="tel" placeholder="(123) 456-7890" {...form.register('phone')} />
+                    <Input id="phone" type="tel" placeholder="+12223334444" {...form.register('phone')} />
                     {errors.phone && <p className="text-destructive text-sm">{errors.phone.message}</p>}
                 </div>
               </CardContent>
