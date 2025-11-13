@@ -370,7 +370,6 @@ export default function BookingPage() {
                   </div>
                 <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <p className="text-sm text-muted-foreground">Please use the format (XXX) XXX-XXXX.</p>
                     <Input
                       id="phone"
                       type="tel"
