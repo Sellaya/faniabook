@@ -14,16 +14,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Search, Info, Mail } from 'lucide-react';
-import type { DetailedMockBooking } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { useFirestore } from '@/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, DocumentData } from 'firebase/firestore';
 
 export default function BookingStatusPage() {
   const firestore = useFirestore();
   const [bookingId, setBookingId] = useState('');
-  const [bookingDetails, setBookingDetails] = useState<DetailedMockBooking | null>(null);
+  const [bookingDetails, setBookingDetails] = useState<DocumentData | null>(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,14 +42,7 @@ export default function BookingStatusPage() {
 
         if (docSnap.exists()) {
             const data = docSnap.data();
-            setBookingDetails({
-                id: docSnap.id,
-                serviceName: data.serviceName,
-                date: data.date,
-                time: data.time,
-                status: data.status,
-                clientName: data.clientName,
-            });
+            setBookingDetails({ id: docSnap.id, ...data });
         } else {
             setError('No booking found with this ID. Please check the number and try again.');
         }
