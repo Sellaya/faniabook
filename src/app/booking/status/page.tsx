@@ -14,39 +14,52 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Search, Info, Mail } from 'lucide-react';
-import { detailedMockBookings } from '@/app/data';
 import type { DetailedMockBooking } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { useFirestore } from '@/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function BookingStatusPage() {
+  const firestore = useFirestore();
   const [bookingId, setBookingId] = useState('');
   const [bookingDetails, setBookingDetails] = useState<DetailedMockBooking | null>(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!firestore) {
+        setError('Failed to connect to the database. Please try again later.');
+        return;
+    }
     setIsLoading(true);
     setError('');
     setBookingDetails(null);
 
-    // Simulate API call
-    setTimeout(() => {
-      if (!/^\d{4}$/.test(bookingId)) {
-        setError('Please enter a valid 4-digit booking ID.');
-        setIsLoading(false);
-        return;
-      }
+    try {
+        const docRef = doc(firestore, 'bookings', bookingId.trim());
+        const docSnap = await getDoc(docRef);
 
-      const foundBooking = detailedMockBookings.find(b => b.id === bookingId);
-      if (foundBooking) {
-        setBookingDetails(foundBooking);
-      } else {
-        setError('No booking found with this ID. Please check the number and try again.');
-      }
-      setIsLoading(false);
-    }, 1000);
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            setBookingDetails({
+                id: docSnap.id,
+                serviceName: data.serviceName,
+                date: data.date,
+                time: data.time,
+                status: data.status,
+                clientName: data.clientName,
+            });
+        } else {
+            setError('No booking found with this ID. Please check the number and try again.');
+        }
+    } catch (e) {
+        console.error("Error fetching booking:", e);
+        setError('An error occurred while fetching your booking. Please try again.');
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   return (
@@ -60,7 +73,7 @@ export default function BookingStatusPage() {
             <div>
               <CardTitle className="font-headline text-3xl">Check Your Booking</CardTitle>
               <CardDescription>
-                Enter your 4-digit booking ID to view the status and details of your appointment.
+                Enter your booking ID to view the status and details of your appointment.
               </CardDescription>
             </div>
           </div>
@@ -72,16 +85,15 @@ export default function BookingStatusPage() {
               <Input
                 id="booking-id"
                 type="text"
-                placeholder="e.g., 1234"
+                placeholder="Enter your booking ID"
                 value={bookingId}
                 onChange={(e) => setBookingId(e.target.value)}
-                maxLength={4}
                 required
               />
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading || !bookingId}>
               {isLoading ? 'Searching...' : 'Find My Booking'}
             </Button>
           </CardFooter>

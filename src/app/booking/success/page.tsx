@@ -12,6 +12,9 @@ import { format } from 'date-fns';
 import { CheckCircle, Home, Copy, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
+import { useFirestore } from '@/firebase';
+import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { collection } from 'firebase/firestore';
 
 // A simple SVG for the WhatsApp icon
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -34,6 +37,7 @@ const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 function SuccessContent() {
   const searchParams = useSearchParams();
+  const firestore = useFirestore();
   const [bookingDetails, setBookingDetails] = useState<{
     service: Service | null;
     serviceType: string;
@@ -43,26 +47,56 @@ function SuccessContent() {
     location?: string;
     bookingId: string;
     phone: string;
+    name: string;
+    email: string;
   } | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
+    if (!firestore) return;
+
     const serviceId = searchParams.get('serviceId');
     const service = services.find(s => s.id === serviceId) || null;
+    const name = searchParams.get('name') || '';
+    const email = searchParams.get('email') || '';
+    const phone = searchParams.get('phone') || '';
+    const date = searchParams.get('date') ? new Date(searchParams.get('date')!) : null;
+    const time = searchParams.get('time') || '';
     
-    const mockBookingId = Math.floor(1000 + Math.random() * 9000).toString();
+    if (service && name && email && phone && date && time) {
+        const bookingsColRef = collection(firestore, 'bookings');
+        const bookingData = {
+            serviceId: service.id,
+            serviceName: service.name,
+            serviceType: searchParams.get('serviceType') || '',
+            date: date.toISOString(),
+            time: time,
+            price: Number(searchParams.get('price')) || 0,
+            location: searchParams.get('location') || undefined,
+            clientName: name,
+            email: email,
+            phone: phone,
+            status: 'Confirmed'
+        };
 
-    setBookingDetails({
-      service,
-      serviceType: searchParams.get('serviceType') || '',
-      date: searchParams.get('date') ? new Date(searchParams.get('date')!) : null,
-      time: searchParams.get('time') || '',
-      price: Number(searchParams.get('price')) || 0,
-      location: searchParams.get('location') || undefined,
-      bookingId: mockBookingId,
-      phone: searchParams.get('phone') || '',
-    });
-  }, [searchParams]);
+        addDocumentNonBlocking(bookingsColRef, bookingData).then(docRef => {
+            if (docRef) {
+                 setBookingDetails({
+                    service,
+                    serviceType: bookingData.serviceType,
+                    date: date,
+                    time: time,
+                    price: bookingData.price,
+                    location: bookingData.location,
+                    bookingId: docRef.id,
+                    phone: phone,
+                    name: name,
+                    email: email,
+                });
+            }
+        });
+    }
+  }, [searchParams, firestore]);
 
   const handleCopyToClipboard = () => {
     if (bookingDetails?.bookingId) {
@@ -100,7 +134,10 @@ function SuccessContent() {
             <Skeleton className="h-4 w-1/2 mt-2" />
           </CardHeader>
           <CardContent>
-            <Skeleton className="h-40 w-full" />
+             <Skeleton className="h-4 w-full" />
+             <Skeleton className="h-4 w-full mt-2" />
+            <Skeleton className="h-20 w-full mt-4" />
+            <p className='text-center mt-4 text-muted-foreground'>Finalizing your booking...</p>
           </CardContent>
         </Card>
       </div>
