@@ -14,6 +14,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { Mail, Phone, User } from 'lucide-react';
 
+const GST_RATE = 0.13;
+
 function ContractContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -25,6 +27,8 @@ function ContractContent() {
     date: Date | null;
     time: string;
     price: number;
+    subtotal: number;
+    gst: number;
     location?: string;
     name: string;
     email: string;
@@ -34,13 +38,18 @@ function ContractContent() {
   useEffect(() => {
     const serviceId = searchParams.get('serviceId');
     const service = services.find(s => s.id === serviceId) || null;
+    const price = parseFloat(searchParams.get('price') || '0');
+    const subtotal = price / (1 + GST_RATE);
+    const gst = price - subtotal;
     
     setBookingDetails({
       service,
       serviceType: searchParams.get('serviceType') || '',
       date: searchParams.get('date') ? new Date(searchParams.get('date')!) : null,
       time: searchParams.get('time') || '',
-      price: Number(searchParams.get('price')) || 0,
+      price,
+      subtotal,
+      gst,
       location: searchParams.get('location') || undefined,
       name: searchParams.get('name') || '',
       email: searchParams.get('email') || '',
@@ -71,7 +80,7 @@ function ContractContent() {
     );
   }
 
-  const { service, serviceType, date, time, price, location, name, email, phone } = bookingDetails;
+  const { service, serviceType, date, time, price, subtotal, gst, location, name, email, phone } = bookingDetails;
   
   return (
     <div className="container mx-auto max-w-3xl py-12 px-4">
@@ -111,7 +120,11 @@ function ContractContent() {
                         {serviceType === 'mobile' && location && <p><strong>Location:</strong> {location}</p>}
                     </div>
                 </div>
-                 <p className="text-lg font-bold pt-4 text-right"><strong>Total:</strong> CAD ${price}</p>
+                 <div className="border-t pt-4 mt-4 text-right space-y-1">
+                    <p><strong>Subtotal:</strong> CAD ${subtotal.toFixed(2)}</p>
+                    <p><strong>GST (13%):</strong> CAD ${gst.toFixed(2)}</p>
+                    <p className="text-lg font-bold"><strong>Total:</strong> CAD ${price.toFixed(2)}</p>
+                </div>
             </CardContent>
           </Card>
 

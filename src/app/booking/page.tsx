@@ -71,6 +71,8 @@ const availableTimes = [
   '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM',
 ];
 
+const GST_RATE = 0.13;
+
 export default function BookingPage() {
   const router = useRouter();
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -120,10 +122,11 @@ export default function BookingPage() {
 
   const calculateQuote = () => {
     if (!selectedService) return 0;
-    let total = selectedService.price || 0;
+    let basePrice = selectedService.price || 0;
     if (watchedServiceType === 'mobile') {
-      total += 50; // Mobile service fee
+      basePrice += 50; // Mobile service fee
     }
+    const total = basePrice * (1 + GST_RATE);
     return total;
   };
   
@@ -373,7 +376,7 @@ export default function BookingPage() {
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="(647) 123-4567"
+                      placeholder="(XXX) XXX-XXXX"
                       {...form.register('phone')}
                       onChange={handlePhoneChange}
                     />

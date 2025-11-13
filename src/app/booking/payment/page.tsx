@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
-import { CreditCard, Info, Store, Mail, Upload } from 'lucide-react';
+import { CreditCard, Info, Store, Mail } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -47,7 +47,7 @@ function PaymentContent() {
   useEffect(() => {
     const serviceId = searchParams.get('serviceId');
     const service = services.find(s => s.id === serviceId) || null;
-    const price = Number(searchParams.get('price')) || 0;
+    const price = parseFloat(searchParams.get('price') || '0');
     const serviceType = searchParams.get('serviceType') || '';
     
     setBookingDetails({
@@ -55,7 +55,7 @@ function PaymentContent() {
       serviceType,
       date: searchParams.get('date') ? new Date(searchParams.get('date')!) : null,
       price,
-      advancePayment: Math.round(price * 0.5),
+      advancePayment: parseFloat((price * 0.5).toFixed(2)),
     });
 
     if (serviceType === 'in-studio') {
@@ -111,7 +111,7 @@ function PaymentContent() {
 
   const buttonText = () => {
       if (paymentOption === 'pay-in-studio') return 'Confirm Booking';
-      return `Pay CAD $${advancePayment} & Confirm`;
+      return `Pay CAD $${advancePayment.toFixed(2)} & Confirm`;
   }
 
   return (
@@ -125,7 +125,7 @@ function PaymentContent() {
           <div className="rounded-lg border bg-primary/5 p-4">
             <h3 className="font-semibold">Booking Summary</h3>
             <p className="text-sm">{service.name} on {format(date, 'MMMM dd, yyyy')}</p>
-            <p className="text-2xl font-bold mt-2">CAD ${price}</p>
+            <p className="text-2xl font-bold mt-2">CAD ${price.toFixed(2)}</p>
           </div>
 
           <div>
@@ -147,13 +147,13 @@ function PaymentContent() {
                       <RadioGroupItem value="interac" className="sr-only" />
                       <InteracIcon />
                       <span className="font-semibold mt-2">Interac e-Transfer</span>
-                      <span className="text-xs text-muted-foreground text-center mt-1">Pay 50% deposit (CAD ${advancePayment}) via Interac.</span>
+                      <span className="text-xs text-muted-foreground text-center mt-1">Pay 50% deposit (CAD ${advancePayment.toFixed(2)}) via Interac.</span>
                   </Label>
                   <Label className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-sm hover:bg-accent/50 [&:has([data-state=checked])]:border-primary">
                       <RadioGroupItem value="stripe" className="sr-only" />
                       <CreditCard className="mb-2 h-6 w-6" />
                       <span className="font-semibold">Credit Card</span>
-                      <span className="text-xs text-muted-foreground text-center mt-1">Pay 50% deposit (CAD ${advancePayment}) via Stripe.</span>
+                      <span className="text-xs text-muted-foreground text-center mt-1">Pay 50% deposit (CAD ${advancePayment.toFixed(2)}) via Stripe.</span>
                   </Label>
             </RadioGroup>
           </div>
@@ -163,7 +163,7 @@ function PaymentContent() {
                 <Info className="h-4 w-4" />
                 <AlertTitle>50% Deposit Required</AlertTitle>
                 <AlertDescription>
-                  A non-refundable deposit of <strong>CAD ${advancePayment}</strong> is required to secure your booking. The remaining balance is due on the day of service.
+                  A non-refundable deposit of <strong>CAD ${advancePayment.toFixed(2)}</strong> is required to secure your booking. The remaining balance is due on the day of service.
                 </AlertDescription>
               </Alert>
           )}
@@ -174,7 +174,7 @@ function PaymentContent() {
                     <CardTitle className="flex items-center gap-2 font-headline"><InteracIcon /> Interac e-Transfer Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <p className="text-sm">Please send <strong>CAD ${advancePayment}</strong> to the following email address:</p>
+                    <p className="text-sm">Please send <strong>CAD ${advancePayment.toFixed(2)}</strong> to the following email address:</p>
                     <div className="flex items-center gap-2 rounded-md border bg-muted p-3">
                         <Mail className="h-4 w-4 text-muted-foreground" />
                         <span className="font-mono text-sm">contact@faniabook.com</span>

@@ -14,7 +14,7 @@ import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { useFirestore } from '@/firebase';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { collection, DocumentData, doc } from 'firebase/firestore';
+import { DocumentData, doc } from 'firebase/firestore';
 
 // A simple SVG for the WhatsApp icon
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -66,7 +66,7 @@ function SuccessContent() {
     if (service && name && email && phone && date && time) {
         const bookingId = Math.floor(1000 + Math.random() * 9000).toString();
         
-        const location = searchParams.get('location');
+        const location = searchParams.get('location') || null;
 
         const bookingData: DocumentData = {
             serviceId: service.id,
@@ -74,12 +74,12 @@ function SuccessContent() {
             serviceType: searchParams.get('serviceType') || '',
             date: date.toISOString(),
             time: time,
-            price: Number(searchParams.get('price')) || 0,
+            price: parseFloat(searchParams.get('price') || '0'),
             clientName: name,
             email: email,
             phone: phone,
             status: 'Confirmed',
-            location: location || null
+            location: location
         };
 
         const docRef = doc(firestore, `bookings/${bookingId}`);
@@ -175,7 +175,7 @@ function SuccessContent() {
               <p><strong>Time:</strong> {time}</p>
               <p><strong>Type:</strong> {serviceType === 'mobile' ? 'Mobile Service' : 'In-Studio'}</p>
               {serviceType === 'mobile' && location && <p><strong>Location:</strong> {location}</p>}
-              <p className="text-lg font-bold pt-2"><strong>Total Amount:</strong> CAD ${price}</p>
+              <p className="text-lg font-bold pt-2"><strong>Total Amount:</strong> CAD ${price.toFixed(2)}</p>
             </CardContent>
           </Card>
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
