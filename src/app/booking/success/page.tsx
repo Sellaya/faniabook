@@ -9,12 +9,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
-import { CheckCircle, Home, Copy, Search } from 'lucide-react';
+import { CheckCircle, Home, Search, Copy } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { useFirestore } from '@/firebase';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { collection, DocumentData } from 'firebase/firestore';
+import { collection, DocumentData, doc } from 'firebase/firestore';
 
 // A simple SVG for the WhatsApp icon
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -64,6 +64,7 @@ function SuccessContent() {
     const time = searchParams.get('time') || '';
     
     if (service && name && email && phone && date && time) {
+        const bookingId = Math.floor(1000 + Math.random() * 9000).toString();
         const bookingsColRef = collection(firestore, 'bookings');
         const location = searchParams.get('location');
 
@@ -82,23 +83,25 @@ function SuccessContent() {
 
         if (location) {
             bookingData.location = location;
+        } else {
+            bookingData.location = null;
         }
 
-        addDocumentNonBlocking(bookingsColRef, bookingData).then(docRef => {
-            if (docRef) {
-                 setBookingDetails({
-                    service,
-                    serviceType: bookingData.serviceType,
-                    date: date,
-                    time: time,
-                    price: bookingData.price,
-                    location: bookingData.location,
-                    bookingId: docRef.id,
-                    phone: phone,
-                    name: name,
-                    email: email,
-                });
-            }
+        const docRef = doc(firestore, `bookings/${bookingId}`);
+
+        addDocumentNonBlocking(docRef, bookingData).then(() => {
+             setBookingDetails({
+                service,
+                serviceType: bookingData.serviceType,
+                date: date,
+                time: time,
+                price: bookingData.price,
+                location: bookingData.location,
+                bookingId: bookingId,
+                phone: phone,
+                name: name,
+                email: email,
+            });
         });
     }
   }, [searchParams, firestore]);
