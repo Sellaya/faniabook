@@ -65,7 +65,7 @@ function SuccessContent() {
     
     if (service && name && email && phone && date && time) {
         const bookingId = Math.floor(1000 + Math.random() * 9000).toString();
-        const bookingsColRef = collection(firestore, 'bookings');
+        
         const location = searchParams.get('location');
 
         const bookingData: DocumentData = {
@@ -78,14 +78,9 @@ function SuccessContent() {
             clientName: name,
             email: email,
             phone: phone,
-            status: 'Confirmed'
+            status: 'Confirmed',
+            location: location || null
         };
-
-        if (location) {
-            bookingData.location = location;
-        } else {
-            bookingData.location = null;
-        }
 
         const docRef = doc(firestore, `bookings/${bookingId}`);
 
