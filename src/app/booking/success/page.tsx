@@ -180,7 +180,7 @@ function SuccessContent() {
               <p><strong>Time:</strong> {time}</p>
               <p><strong>Type:</strong> {serviceType === 'mobile' ? 'Mobile Service' : 'In-Studio'}</p>
               {serviceType === 'mobile' && location && <p><strong>Location:</strong> {location}</p>}
-              <p className="text-lg font-bold pt-2"><strong>Total Amount:</strong> CAD {price}</p>
+              <p className="text-lg font-bold pt-2"><strong>Total Amount:</strong> CAD ${price}</p>
             </CardContent>
           </Card>
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">

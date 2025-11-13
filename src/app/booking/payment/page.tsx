@@ -71,8 +71,8 @@ function PaymentContent() {
   
   const showPaymentForm = serviceType === 'mobile' || (serviceType === 'in-studio' && inStudioPaymentOption === 'pay-deposit');
   const buttonText = () => {
-      if (serviceType === 'mobile') return `Pay CAD ${advancePayment} & Confirm`;
-      if (serviceType === 'in-studio' && inStudioPaymentOption === 'pay-deposit') return `Pay CAD ${advancePayment} & Confirm`;
+      if (serviceType === 'mobile') return `Pay CAD $${advancePayment} & Confirm`;
+      if (serviceType === 'in-studio' && inStudioPaymentOption === 'pay-deposit') return `Pay CAD $${advancePayment} & Confirm`;
       return 'Confirm Booking';
   }
 
@@ -87,7 +87,7 @@ function PaymentContent() {
           <div className="rounded-lg border bg-primary/5 p-4">
             <h3 className="font-semibold">Booking Summary</h3>
             <p className="text-sm">{service.name} on {format(date, 'MMMM dd, yyyy')}</p>
-            <p className="text-2xl font-bold mt-2">CAD {price}</p>
+            <p className="text-2xl font-bold mt-2">CAD ${price}</p>
           </div>
 
           {serviceType === 'mobile' && (
@@ -95,7 +95,7 @@ function PaymentContent() {
               <Info className="h-4 w-4" />
               <AlertTitle>Mobile Service Payment</AlertTitle>
               <AlertDescription>
-                A <strong>50% advance payment of CAD {advancePayment}</strong> is required to confirm your booking. The remaining balance is due on the day of service.
+                A <strong>50% advance payment of CAD ${advancePayment}</strong> is required to confirm your booking. The remaining balance is due on the day of service.
               </AlertDescription>
             </Alert>
           )}
@@ -118,7 +118,7 @@ function PaymentContent() {
                         <RadioGroupItem value="pay-deposit" className="sr-only" />
                         <CreditCard className="mb-2 h-6 w-6" />
                         <span className="font-semibold">Pay 50% Deposit Now</span>
-                        <span className="text-xs text-muted-foreground text-center mt-1">Secure your spot by paying CAD {advancePayment} today.</span>
+                        <span className="text-xs text-muted-foreground text-center mt-1">Secure your spot by paying CAD ${advancePayment} today.</span>
                     </Label>
               </RadioGroup>
             </div>
