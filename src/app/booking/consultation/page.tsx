@@ -22,7 +22,7 @@ import Link from 'next/link';
 const consultationSchema = z.object({
   name: z.string().min(1, 'Please enter your name.'),
   email: z.string().email('Please enter a valid email address.'),
-  phone: z.string().regex(/^\(\d{3}\) \d{3}-\d{4}$/, 'Phone number must be in the format (XXX) XXX-XXXX'),
+  phone: z.string().regex(/^\(\d{3}\) \d{3}-\d{4}$/, 'Phone number must be in the Canadian format (XXX) XXX-XXXX.'),
   message: z.string().min(10, 'Please enter a message with at least 10 characters.'),
 });
 
