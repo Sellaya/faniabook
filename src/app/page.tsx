@@ -64,7 +64,7 @@ export default function Home() {
                   <div className="flex flex-col justify-between p-6 w-full">
                     <div>
                       <div className="flex items-center mb-2">
-                        <Icon className="h-8 w-8 text-accent mr-3" />
+                        <Icon className="h-8 w-8 text-primary mr-3" />
                         <CardTitle className="font-headline text-2xl">{service.name}</CardTitle>
                       </div>
                       <CardDescription>{service.description}</CardDescription>
