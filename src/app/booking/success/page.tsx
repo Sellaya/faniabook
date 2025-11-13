@@ -191,7 +191,7 @@ function SuccessContent() {
             </Button>
             <Button asChild variant="secondary" className="bg-green-500 text-white hover:bg-green-600">
                 <a href={createWhatsAppLink()} target="_blank" rel="noopener noreferrer">
-                    <WhatsAppIcon className="mr-2 h-4 w-4" /> Send to WhatsApp
+                    <WhatsAppIcon className="mr-2 h-4 w-4" /> Send this to your whatsapp
                 </a>
             </Button>
           </div>
