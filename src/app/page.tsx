@@ -39,7 +39,7 @@ export default function Home() {
           <p className="mt-4 max-w-2xl mx-auto font-body text-md text-muted-foreground md:text-lg">
             Discover a world of beauty with FaniaBook. We offer bespoke makeup services, making your special moments unforgettable.
           </p>
-          <Button asChild className="mt-6 bg-accent text-accent-foreground hover:bg-accent/90" size="lg">
+          <Button asChild className="mt-6 bg-primary text-primary-foreground hover:bg-primary/90" size="lg">
             <Link href="/booking">
               Book Your Appointment <ArrowRight className="ml-2" />
             </Link>
