@@ -354,8 +354,9 @@ export default function BookingPage() {
                   </div>
                 <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
+                    <p className="text-sm text-muted-foreground">Please use the format +1 followed by 10 digits (e.g., +12223334444).</p>
                     <Input id="phone" type="tel" placeholder="+12223334444" {...form.register('phone')} />
-                    {errors.phone && <p className="text-destructive text-sm">{errors.phone.message}</p>}
+                    {errors.phone && <p className="text-destructive text-sm mt-1">{errors.phone.message}</p>}
                 </div>
               </CardContent>
             </Card>
