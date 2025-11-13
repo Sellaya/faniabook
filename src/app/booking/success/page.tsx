@@ -9,9 +9,28 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
-import { CheckCircle, Home, Copy, Search } from 'lucide-react';
+import { CheckCircle, Home, Copy, Search, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
+
+// A simple SVG for the WhatsApp icon
+const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+    </svg>
+);
+
 
 function SuccessContent() {
   const searchParams = useSearchParams();
@@ -23,6 +42,7 @@ function SuccessContent() {
     price: number;
     location?: string;
     bookingId: string;
+    phone: string;
   } | null>(null);
   const { toast } = useToast();
 
@@ -30,7 +50,6 @@ function SuccessContent() {
     const serviceId = searchParams.get('serviceId');
     const service = services.find(s => s.id === serviceId) || null;
     
-    // Generate a mock 4-digit booking ID
     const mockBookingId = Math.floor(1000 + Math.random() * 9000).toString();
 
     setBookingDetails({
@@ -41,6 +60,7 @@ function SuccessContent() {
       price: Number(searchParams.get('price')) || 0,
       location: searchParams.get('location') || undefined,
       bookingId: mockBookingId,
+      phone: searchParams.get('phone') || '',
     });
   }, [searchParams]);
 
@@ -53,6 +73,22 @@ function SuccessContent() {
       });
     }
   };
+
+  const createWhatsAppLink = () => {
+    if (!bookingDetails || !bookingDetails.service || !bookingDetails.date) return '';
+
+    const { service, date, time, bookingId, phone } = bookingDetails;
+    const bookingStatusUrl = `${window.location.origin}/booking/status`;
+    const message = `Hello! Here are my booking details:\n\n*Service:* ${service.name}\n*Date:* ${format(date, 'MMMM dd, yyyy')}\n*Time:* ${time}\n*Booking ID:* ${bookingId}\n\nCheck status here: ${bookingStatusUrl}`;
+    
+    // Basic phone number cleaning - assumes North American format if it's 10 digits.
+    let formattedPhone = phone.replace(/\D/g, '');
+    if(formattedPhone.length === 10) {
+        formattedPhone = `1${formattedPhone}`;
+    }
+
+    return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+  }
 
   if (!bookingDetails || !bookingDetails.service || !bookingDetails.date) {
     return (
@@ -102,16 +138,21 @@ function SuccessContent() {
               <p className="text-lg font-bold pt-2"><strong>Total Amount:</strong> ${price.toFixed(2)}</p>
             </CardContent>
           </Card>
-          <div className="flex justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
             <Button asChild variant="outline">
               <Link href="/">
                 <Home className="mr-2 h-4 w-4" /> Go to Homepage
               </Link>
             </Button>
-            <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button asChild>
               <Link href="/booking/status">
                 <Search className="mr-2 h-4 w-4" /> Check Booking Status
               </Link>
+            </Button>
+            <Button asChild variant="secondary" className="bg-green-500 text-white hover:bg-green-600">
+                <a href={createWhatsAppLink()} target="_blank" rel="noopener noreferrer">
+                    <WhatsAppIcon className="mr-2 h-4 w-4" /> Send to WhatsApp
+                </a>
             </Button>
           </div>
         </CardContent>
